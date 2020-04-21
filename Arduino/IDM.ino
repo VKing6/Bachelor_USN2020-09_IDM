@@ -1,6 +1,6 @@
 // #define DEBUG
 
-#include <ThreeWire.h>  
+#include <ThreeWire.h>
 #include <RtcDS1302.h>
 
 #include "boolToByte.h"
