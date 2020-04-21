@@ -292,6 +292,39 @@ class PageTwo(tk.Frame):
 
 
 
+
+            
+        
+        Lufthastighetbtn = tk.Button(self, text="Lufthastighet",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 15, 'bold')) # 
+        Lufthastighetbtn.grid(row = 2 , column = 3)        
+        
+        
+        
+        labelsp4 = tk.Label(self, text="    ",  font=('helvetica', 30, 'bold'))
+        labelsp4.grid(row = 2 , column = 2) 
+        
+        
+        lufthastighetbox = tk.Text(self, height =5, width = 5)
+        lufthastighetbox.grid(row=2, column=4) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  ###################################  PAGE 3 Røykprobe  #####################################################   
 
 
@@ -325,6 +358,10 @@ class PageThree(tk.Frame):
         
         probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 25, 'bold')) # 
         probe.grid(row = 6 , column = 0)
+        
+        
+        
+
 
 
 
