@@ -12,9 +12,10 @@ class SerialReceiver(threading.Thread):
         self.timeout = timeout
         self.data = data
         self.stop_event = stop_event
+        threading.Thread.__init__(self)
 
     def run(self):
-        with serial.Serial(self.port, self.rate, self.timeout) as ser:
+        with serial.Serial(port=self.port, baudrate=self.rate, timeout=self.timeout) as ser:
             while not self.stop_event.is_set():
                 in_data = ser.readline()
                 if len(in_data) > 0:
@@ -24,9 +25,11 @@ if __name__ == "__main__":
     data = dataobject.DataObject()
     event = threading.Event()
     rcv = SerialReceiver(data, event)
-    rcv.run()
-    for i in range(20):
-        print(data.get_time)
+    rcv.start()
+    print("Starting")
+    for i in range(4):
+        print(i, data.get_time())
         time.sleep(1.5)
+    print("End")
     event.set()
     rcv.join()
