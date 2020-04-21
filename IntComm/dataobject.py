@@ -40,6 +40,9 @@ class DataObject(object):
                     self.set_time(str(value))
                 if key == "windspeed":
                     self.set_windspeed(int(value))
+
+    def parse_datastring(self, data):
+        pass
                     
     def get_dataString(self):
         with self.lock:
