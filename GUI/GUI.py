@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import tkinter as tk
 from tkinter import filedialog
 from pandas import DataFrame
@@ -33,7 +34,9 @@ class SeaofBTCapp(tk.Tk):
 
     def __init__(self, *args, **kwargs): 
         
+        
         tk.Tk.__init__(self, *args, **kwargs)
+        
         container = tk.Frame(self)
 
         container.pack(side="top", fill="both", expand = True)
@@ -57,7 +60,9 @@ class SeaofBTCapp(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame(StartPage) # viser første side
-        #self.geometry("1300x500")
+        self.geometry("1300x500")
+        #self.geometry("800x480")
+        self.title("IDM")
 
 
     def show_frame(self, cont):
@@ -523,6 +528,9 @@ def NewWindow():
 
 
 app = SeaofBTCapp()
+
+app.resizable(0, 0)
+#app.attributes("-type","splash")
 
 app.mainloop()
 
