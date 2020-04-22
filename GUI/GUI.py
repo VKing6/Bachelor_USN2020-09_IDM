@@ -13,6 +13,12 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
 
+import sys
+sys.path.insert(0, "/home/pi/Projects/IDM/IntComm")
+import dataobject
+import idmserial
+import threading
+
 #from PIL import Image,ImageTk
 
 LARGE_FONT= ("Verdana", 12)
@@ -20,7 +26,9 @@ LARGE_FONT= ("Verdana", 12)
 ######################################## initialization  ##################################
     
 
-
+stop_receiver_event = threading.Event()
+sensor_data = dataobject.DataObject()
+comm = idmserial.SerialCommunicator(sensor_data,stop_receiver_event)
 
 
 
@@ -243,6 +251,12 @@ class PageTwo(tk.Frame):
         def empty():
             test = 3
             
+        def update_display():
+            self.ws = sensor_data.get_data()["windspeed"]
+            lableAirV.config(text=str(self.ws))
+            
+            self.after(500, update_display)
+            
 
         SpeedAndPitch = tk.Button(self, text="Menu",height = 2, width = 15,command=lambda: controller.show_frame(StartPage), bg='blue', fg='white', font=('helvetica', 30, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 0)
@@ -313,6 +327,8 @@ class PageTwo(tk.Frame):
         froceV.grid(row = 8, column = 2)  
         lablefroceV = tk.Label(self, text="15 N",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lablefroceV.grid(row = 8, column = 3) 
+        
+        self.after(0, update_display)
 
 
 
@@ -526,7 +542,7 @@ app = SeaofBTCapp()
 
 app.mainloop()
 
-
+comm.close()
 
 
 

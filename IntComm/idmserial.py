@@ -19,6 +19,7 @@ class SerialCommunicator:
                 in_data = self.ser.readline()
                 if len(in_data) > 0:
                     self.data.parse_datastring(in_data)
+                    print(self.data.get_data())
             print(__name__, "Stopping")
 
 
@@ -33,17 +34,24 @@ class SerialCommunicator:
 
     def __init__(self, data, stop_event,
                  port='/dev/ttyACM0', rate=57600, timeout=1):
+        print(__name__, "Init")
         self.data = data
         self.stop_event = stop_event
-        with serial.Serial(port=port, bitrate=rate, timeout=timeout) as self.ser:
-            self.transmitter = self.SerialTransmitter(self.ser)
-            self.receiver = self.SerialReceiver(self.ser, self.data, self.stop_event)
-            self.receiver.start()
+        
+        self.ser = serial.Serial(port=port, baudrate=rate, timeout=timeout)
+        self.transmitter = self.SerialTransmitter(self.ser)
+        self.receiver = self.SerialReceiver(self.ser, self.data, self.stop_event)
+        self.receiver.start()
 
-    def __del__(self):
+    def __del__(self):  # Destructor, but doesn't work
+        print(__name__, "Destructor")
+        self.close()
+        
+    def close(self):
+        print(__name__, "Close")
         self.stop_event.set()
         self.receiver.join()
-        print(__name__, "Destrictor")
+        self.ser.close()
 
     def transmit(self, message):
         self.transmitter.transmit(message)
@@ -59,4 +67,5 @@ if __name__ == "__main__":
         print(i, data.get_data())
         time.sleep(1.5)
     comm.transmit("Fnord")
+    comm.close()
     print("End")

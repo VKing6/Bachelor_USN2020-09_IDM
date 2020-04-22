@@ -192,7 +192,7 @@ void formatDateTime(const RtcDateTime& dt, char* returnstring) {
 
     snprintf_P(datestring, 
             countof(datestring),
-            PSTR("%04u%02u%02u %02u%02u%02u"),
+            PSTR("%04u-%02u-%02uT%02u:%02u:%02u"),
             dt.Year(),
             dt.Month(),
             dt.Day(),

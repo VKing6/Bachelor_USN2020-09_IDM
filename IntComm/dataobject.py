@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 import threading
+import datetime
 
 class DataObject(object):
     def __init__(self, lock=None):
         self.__lock = lock or threading.RLock()
 
-        self.__time = "fnord"
+        self.__datestring = "fnord"
+        self.__datetime = datetime.datetime(1900,1,1)
         self.__windspeed = -1
         self.__temperature = -1
         self.__humidity = -1
@@ -15,23 +17,25 @@ class DataObject(object):
     def parse_datastring(self, data):
         with self.__lock:
             try:
-                time, windspeed, temperature, humidity, pitch, bools = data.split("|")
+                datestring, windspeed, temperature, humidity, pitch, bools = data.split(b"|")
             except ValueError:
                 try:
-                    time, windspeed, temperature, humidity, pitch = data.split("|")
+                    datestring, windspeed, temperature, humidity, pitch = data.split(b"|")
                     bools = -1
                 except ValueError:
-                    time, windspeed, temperature, humidity, pitch, bools = "error", -1, -1, -1, -1, -1
+                    datestring, windspeed, temperature = "1900-01-01T12:00:00", -1, -1
+                    humidity, pitch, bools = -1, -1, -1
             
-            self.__time = time
-            self.__windspeed = windspeed
-            self.__temperature = temperature
-            self.__humidity = humidity
-            self.__pitch = pitch
-            self.__bools = bools
+            self.__datestring = datestring.decode("utf-8")
+            self.__datetime = datetime.datetime.fromisoformat(self.__datestring)
+            self.__windspeed = int(windspeed)
+            self.__temperature = int(temperature)
+            self.__humidity = int(humidity)
+            self.__pitch = int(pitch)
+            self.__bools = int(bools)
                     
     def get_data(self):
         with self.__lock:
-            return dict(time=self.__time, windspeed=self.__windspeed,
+            return dict(time=self.__datestring, windspeed=self.__windspeed,
                         temperature=self.__temperature, humidity=self.__humidity,
-                        pitch=self.__pitch)  # bools
+                        pitch=self.__pitch, datetime=self.__datetime.date())  # bools
