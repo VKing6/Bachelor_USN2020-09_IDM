@@ -1,19 +1,19 @@
 import tkinter as tk
 from tkinter import filedialog
 from pandas import DataFrame
-from tkinter import Tk, Canvas, Frame, BOTH
-from math import * 
-import matplotlib.pyplot as plt
-import random
-import numpy as np
-import math
-from colorama import Fore, Back, Style 
+#from tkinter import Tk, Canvas, Frame, BOTH
+#from math import * 
+#import matplotlib.pyplot as plt
+
+#import numpy as np
+#import math
+#from colorama import Fore, Back, Style 
 from PIL import Image
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
 
-from PIL import Image,ImageTk
+#from PIL import Image,ImageTk
 
 LARGE_FONT= ("Verdana", 12)
 
@@ -57,7 +57,8 @@ class SeaofBTCapp(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame(StartPage) # viser første side
-        #self.geometry("3000x1500")
+        #self.geometry("1300x500")
+
 
     def show_frame(self, cont):
 
@@ -350,7 +351,7 @@ class PageThree(tk.Frame):
 
         
         
-        bar = tk.Scale(self, from_=0, to=200,orient=tk.HORIZONTAL, length=2000,tickinterval=10, width = 100 ,font=('helvetica', 10, 'bold'))
+        bar = tk.Scale(self, from_=-200, to=200,orient=tk.HORIZONTAL, length=2000,tickinterval=50, width = 100 ,font=('helvetica', 10, 'bold'))
         bar.grid(row = 5 , column = 0, columnspan =4)  
   
 
