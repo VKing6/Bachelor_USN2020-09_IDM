@@ -9,6 +9,7 @@ struct SensorData {
     int windSpeed;
     int temperature;
     int humidity;
+    int pitch;
     bool hatchClosed;
     bool fanRunning;
 };
@@ -94,6 +95,10 @@ void setup() {
     // ++ Faux sensors
     pinMode(startStopPin, INPUT_PULLUP);
     pinMode(hatchSafetyPin, INPUT_PULLUP);
+
+    sensorData.temperature = -2;
+    sensorData.humidity = -2;
+    sensorData.pitch = -2;
     // -- Faux sensors
 }
 
@@ -169,12 +174,14 @@ void serialEvent() {
   }
 }
 
+// Order: time|windspeed|temperature|humidity|pitch|bools
 void transmitData(struct SensorData data, char* datestring) {
-    Serial.print(datestring); Serial.print("D"); 
-    Serial.print(data.windSpeed); Serial.print("W");
-    //Serial.print(data.temperature); Serial.print("T");
-    //Serial.print(data.humidity); Serial.print("H");
-    Serial.print(boolToByte(data.hatchClosed, data.fanRunning)); Serial.print("B");
+    Serial.print(datestring); Serial.print("|"); 
+    Serial.print(data.windSpeed); Serial.print("|");
+    Serial.print(data.temperature); Serial.print("|");
+    Serial.print(data.humidity); Serial.print("|");
+    Serial.print(data.pitch); Serial.print("|");
+    Serial.print(boolToByte(data.hatchClosed, data.fanRunning));
     Serial.println();
 }
 
@@ -185,7 +192,7 @@ void formatDateTime(const RtcDateTime& dt, char* returnstring) {
 
     snprintf_P(datestring, 
             countof(datestring),
-            PSTR("%04u-%02u-%02u %02u:%02u:%02u"),
+            PSTR("%04u%02u%02u %02u%02u%02u"),
             dt.Year(),
             dt.Month(),
             dt.Day(),
