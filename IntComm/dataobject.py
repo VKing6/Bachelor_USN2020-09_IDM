@@ -3,48 +3,35 @@ import threading
 
 class DataObject(object):
     def __init__(self, lock=None):
-        self.lock = lock or threading.RLock()
+        self.__lock = lock or threading.RLock()
 
         self.__time = "fnord"
-        self.__windSpeed = 0
-        self.__hatchLocked = False
-
-    def set_time(self, time):
-        with self.lock:
-            self.__time = time[2:]
-
-    def get_time(self):
-        with self.lock:
-            return self.__time
-
-    def set_windspeed(self, speed):
-        with self.lock:
-            self.__windSpeed = speed
-
-    def get_windspeed(self):
-        with self.lock:
-            return self.__windSpeed
-
-    def set_hatchlocked(self, locked):
-        with self.lock:
-            self.__hatchLocked = locked
-
-    def get_hatchlocked(self):
-        with self.lock:
-            return self.__hatchLocked
-
-    def set_data(self, **kwargs):
-        with self.lock:
-            for key, value in kwargs.items():
-                if key == "time":
-                    self.set_time(str(value))
-                if key == "windspeed":
-                    self.set_windspeed(int(value))
+        self.__windspeed = -1
+        self.__temperature = -1
+        self.__humidity = -1
+        self.__pitch = -1
+        self.__bools = -1
 
     def parse_datastring(self, data):
-        pass
+        with self.__lock:
+            try:
+                time, windspeed, temperature, humidity, pitch, bools = data.split("|")
+            except ValueError:
+                try:
+                    time, windspeed, temperature, humidity, pitch = data.split("|")
+                    bools = -1
+                except ValueError:
+                    time, windspeed, temperature, humidity, pitch, bools = "error", -1, -1, -1, -1, -1
+            
+            self.__time = time
+            self.__windspeed = windspeed
+            self.__temperature = temperature
+            self.__humidity = humidity
+            self.__pitch = pitch
+            self.__bools = bools
                     
-    def get_dataString(self):
-        with self.lock:
-            return f"Time: {self.get_time()};  Windspeed: {self.get_windspeed()}"
-
+    def get_data(self):
+        with self.__lock:
+            return dict(time=self.__time, windspeed=self.__windspeed,
+                        temperature=self.__temperature, humidity=self.__humidity,
+                        pitch=self.__pitch)  # bools
