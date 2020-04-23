@@ -5,7 +5,7 @@ from pandas import DataFrame
 #from tkinter import Tk, Canvas, Frame, BOTH
 #from math import * 
 #import matplotlib.pyplot as plt
-
+import serial
 #import numpy as np
 #import math
 #from colorama import Fore, Back, Style 
@@ -14,6 +14,9 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
 
+import datetime as dt
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 #from PIL import Image,ImageTk
 
 LARGE_FONT= ("Verdana", 12)
@@ -22,8 +25,7 @@ LARGE_FONT= ("Verdana", 12)
     
 
 
-
-
+serialArduino = serial.Serial('COM6', 9600)
 
 
 
@@ -60,7 +62,7 @@ class SeaofBTCapp(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame(StartPage) # viser første side
-        self.geometry("1300x500")
+        #self.geometry("1300x500")
         #self.geometry("800x480")
         self.title("IDM")
 
@@ -249,6 +251,24 @@ class PageTwo(tk.Frame):
             test = 3
             
 
+        tempvar = tk.IntVar()
+        
+        def temp2():
+
+            temp2 = float(serialArduino.readline()) 
+            tempvar.set(temp2)
+              
+            
+           
+        def temp_update():
+            temp2()
+            self.after(5000, temp_update)
+        
+     
+        temp_update()            
+        
+               
+        
         SpeedAndPitch = tk.Button(self, text="Menu",height = 2, width = 15,command=lambda: controller.show_frame(StartPage), bg='blue', fg='white', font=('helvetica', 30, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 0)
         
@@ -284,9 +304,9 @@ class PageTwo(tk.Frame):
         spacer4 = tk.Label(self, text="")
         spacer4.grid(row = 5 , column = 0)
 
-        Airtemp = tk.Button(self, text="Air Temprature",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        Airtemp = tk.Button(self, text="Air Temprature",command=grphtest,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         Airtemp.grid(row = 6, column = 0)  
-        labletemp = tk.Label(self, text="10 C",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        labletemp = tk.Label(self, textvariable = tempvar ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         labletemp.grid(row = 6, column = 1)  
 
 
@@ -374,7 +394,36 @@ class PageThree(tk.Frame):
 
 ###### GLOBAL FUNCTIONS ######################################################################
  
+def grphtest():
+    
+        
+    
+    fig = plt.figure(figsize=(5, 4), dpi=200)
+    ax = fig.add_subplot(1, 1, 1)
+    xs = []
+    ys = []
+    
+    def animate(i, xs, ys):
+        
+    
+        temp = float(serialArduino.readline())  #hva som skal plottes i y axe
+        print(temp)
+    
+        xs.append(dt.datetime.now().strftime('%H:%M:%S')) # sender inn hva som plottes  i X axe med tid
+        ys.append(temp)                                   # sender inn hva som plottes  i Y axe   med temp            
+    
+        ax.clear()
+        ax.plot(xs, ys)
+    
+        plt.xticks(rotation=45, ha='right')
+        plt.subplots_adjust(bottom=0.30)
+        plt.title('Time')
+        plt.ylabel('Degree C')
+    
 
+
+    ani= animation.FuncAnimation(fig, animate, fargs=(xs, ys), interval=5000)
+    plt.show(ani)
 
 
  ################################################################################################       
@@ -493,8 +542,6 @@ def exportCSV ():
 
 
 
-
-
     
 ################################################################################################
 
@@ -523,13 +570,13 @@ def NewWindow():
     return window
 
 
-    
+
 
 
 
 app = SeaofBTCapp()
 
-app.resizable(0, 0)
+#app.resizable(0, 0)
 #app.attributes("-type","splash")
 
 app.mainloop()
