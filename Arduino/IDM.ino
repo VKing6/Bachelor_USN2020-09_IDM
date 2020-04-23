@@ -10,6 +10,9 @@ struct SensorData {
     int temperature;
     int humidity;
     int pitch;
+    int airPressure;
+    int dragForce;
+    int liftForce;
     bool hatchClosed;
     bool fanRunning;
 };
@@ -97,8 +100,11 @@ void setup() {
     pinMode(hatchSafetyPin, INPUT_PULLUP);
 
     sensorData.temperature = -2;
-    sensorData.humidity = -2;
-    sensorData.pitch = -2;
+    sensorData.humidity = -3;
+    sensorData.pitch = -4;
+    sensorData.airPressure = -5;
+    sensorData.dragForce = -6;
+    sensorData.liftForce = -7;
     // -- Faux sensors
 }
 
@@ -181,6 +187,9 @@ void transmitData(struct SensorData data, char* datestring) {
     Serial.print(data.temperature); Serial.print("|");
     Serial.print(data.humidity); Serial.print("|");
     Serial.print(data.pitch); Serial.print("|");
+    Serial.print(data.airPressure); Serial.print("|");
+    Serial.print(data.dragForce); Serial.print("|");
+    Serial.print(data.liftForce); Serial.print("|");
     Serial.print(boolToByte(data.hatchClosed, data.fanRunning));
     Serial.println();
 }
