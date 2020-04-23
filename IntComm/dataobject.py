@@ -12,6 +12,9 @@ class DataObject(object):
         self.__temperature = -1
         self.__humidity = -1
         self.__pitch = -1
+        self.__airpressure = -1
+        self.__dragforce = -1
+        self.__liftforce = -1
         self.__bools = -1
 
     def parse_datastring(self, data):
@@ -32,10 +35,15 @@ class DataObject(object):
             self.__temperature = int(temperature)
             self.__humidity = int(humidity)
             self.__pitch = int(pitch)
+            # TBA
+            #self.__airpressure = int(airpressure)
+            #self.__dragforce = int(dragforce)
+            #self.__liftforce = int(liftforce)
             self.__bools = int(bools)
                     
     def get_data(self):
         with self.__lock:
             return dict(time=self.__datestring, windspeed=self.__windspeed,
                         temperature=self.__temperature, humidity=self.__humidity,
-                        pitch=self.__pitch, datetime=self.__datetime.date())  # bools
+                        pitch=self.__pitch, airpressure=self.__airpressure,
+                        dragforce=self.__dragforce, liftforce=self.__liftforce)  # bools

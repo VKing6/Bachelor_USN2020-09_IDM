@@ -120,7 +120,7 @@ class StartPage(tk.Frame):
         labelsp4 = tk.Label(self, text="Project members: ", bg='red', fg='white', font=('helvetica', 30, 'bold'))
         labelsp4.grid(row = 2 , column = 0, columnspan = 4)   
    
-        Kristian = tk.Label(self, text="Kristian Auestasd", font=('helvetica', 30, 'bold'))
+        Kristian = tk.Label(self, text="Kristian Auestad", font=('helvetica', 30, 'bold'))
         Kristian.grid(row = 3 , column = 0, columnspan = 4)
     
         steffen = tk.Label(self, text="Steffen Barskrind",  font=('helvetica', 30, 'bold'))
@@ -257,14 +257,29 @@ class PageTwo(tk.Frame):
         def empty():
             test = 3
             
+        
+        self.windspeed   = tk.IntVar()
+        self.temperature = tk.IntVar()
+        self.humidity    = tk.IntVar()
+        self.pitch       = tk.IntVar()
+        self.airpressure = tk.IntVar()
+        self.dragforce   = tk.IntVar()
+        self.liftforce   = tk.IntVar()
+            
         def update_display():
-            self.ws = sensor_data.get_data()["windspeed"]
-            lableAirV.config(text=str(self.ws))
+            self.sensor_data = sensor_data.get_data()
+            self.windspeed.set(self.sensor_data["windspeed"])
+            self.temperature.set(self.sensor_data["temperature"])
+            self.humidity.set(self.sensor_data["humidity"])
+            self.pitch.set(self.sensor_data["pitch"])
+            self.airpressure.set(self.sensor_data["airpressure"])
+            self.dragforce.set(self.sensor_data["dragforce"])
+            self.liftforce.set(self.sensor_data["liftforce"])
+            #ableAirV.config(text=str(self.ws))
             
             self.after(500, update_display)
             
 
-        tempvar = tk.IntVar()
         
         def temp2():
 
@@ -278,7 +293,7 @@ class PageTwo(tk.Frame):
             self.after(5000, temp_update)
         
      
-        temp_update()            
+        #temp_update()            
         
                
         
@@ -310,7 +325,7 @@ class PageTwo(tk.Frame):
 
         AirVelocity = tk.Button(self, text="Air Velocity",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         AirVelocity.grid(row = 4, column = 0)  
-        lableAirV = tk.Label(self, text="5 m/s",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirV = tk.Label(self, text="5 m/s", textvariable = self.windspeed, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableAirV.grid(row = 4, column = 1)  
 
 
@@ -319,7 +334,7 @@ class PageTwo(tk.Frame):
 
         Airtemp = tk.Button(self, text="Air Temprature",command=grphtest,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         Airtemp.grid(row = 6, column = 0)  
-        labletemp = tk.Label(self, textvariable = tempvar ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        labletemp = tk.Label(self, textvariable = self.temperature ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         labletemp.grid(row = 6, column = 1)  
 
 
@@ -328,7 +343,7 @@ class PageTwo(tk.Frame):
 
         Airhum = tk.Button(self, text="Air Humidity",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         Airhum.grid(row = 8, column = 0)  
-        lableAirhum = tk.Label(self, text="1500",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirhum = tk.Label(self, text="1500", textvariable=self.humidity, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableAirhum.grid(row = 8, column = 1)  
 
 
@@ -336,20 +351,20 @@ class PageTwo(tk.Frame):
 
         Airpress = tk.Button(self, text="Air pressure",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         Airpress.grid(row = 4, column = 2)  
-        lableAirpress = tk.Label(self, text="15 kg/m3",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirpress = tk.Label(self, text="15 kg/m3", textvariable=self.airpressure, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableAirpress.grid(row = 4, column = 3)  
 
 
 
         forceH = tk.Button(self, text="Force Horizontal",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         forceH.grid(row = 6, column = 2)  
-        lableforceH = tk.Label(self, text="2 N",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableforceH = tk.Label(self, text="2 N", textvariable=self.dragforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableforceH.grid(row = 6, column = 3) 
 
 
         froceV = tk.Button(self, text="Force Vertical",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         froceV.grid(row = 8, column = 2)  
-        lablefroceV = tk.Label(self, text="15 N",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lablefroceV = tk.Label(self, text="15 N", textvariable=self.liftforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lablefroceV.grid(row = 8, column = 3) 
         
         self.after(0, update_display)
