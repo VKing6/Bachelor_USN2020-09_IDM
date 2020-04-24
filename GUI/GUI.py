@@ -35,9 +35,9 @@ database = sqlite3.connect("data.db")
 cursor = database.cursor()
 #  Check if data table exists in database and create it if not
 q = ("table", "data")
-database.execute("SELECT count(name) FROM sqlite_master WHERE type=? AND name=?", q)
-if database.fetchone()[0] < 1:
-    database.execute("""CREATE TABLE data
+cursor.execute("SELECT count(name) FROM sqlite_master WHERE type=? AND name=?", q)
+if cursor.fetchone()[0] < 1:
+    cursor.execute("""CREATE TABLE data
                 (time date, windspeed int, temperature int, humidity int, pitch int,
                     airpressure int, dragforce int, liftforce int)""")
 
