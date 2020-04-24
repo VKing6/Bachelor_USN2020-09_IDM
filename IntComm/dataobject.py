@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 import threading
 import datetime
+import sqlite3
 
 class DataObject(object):
-    def __init__(self, lock=None):
+    def __init__(self, database_cursor, lock=None):
         self.__lock = lock or threading.RLock()
+
+        self.__db = database_cursor
 
         self.__datestring = "fnord"
         self.__datetime = datetime.datetime(1900,1,1)
@@ -16,6 +19,14 @@ class DataObject(object):
         self.__dragforce = -1
         self.__liftforce = -1
         self.__bools = -1
+
+    def amend_db(self):
+        with self.__lock:
+            self.__db.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                               (self.__datestring, self.__windspeed, self.__temperature,
+                                self.__humidity, self.__pitch, self.__airpressure, 
+                                self.__dragforce, self.__liftforce))
+            self.__db.commit()
 
     def parse_datastring(self, data):
         with self.__lock:
@@ -42,6 +53,8 @@ class DataObject(object):
             self.__dragforce = int(dragforce)
             self.__liftforce = int(liftforce)
             self.__bools = int(bools)
+
+            self.amend_db()
                     
     def get_data(self):
         with self.__lock:

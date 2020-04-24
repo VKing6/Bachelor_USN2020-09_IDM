@@ -22,6 +22,7 @@ sys.path.insert(0, "/home/pi/Projects/IDM/IntComm")
 import dataobject
 import idmserial
 import threading
+import sqlite3
 
 #from PIL import Image,ImageTk
 
@@ -29,10 +30,22 @@ LARGE_FONT= ("Verdana", 12)
 
 ######################################## initialization  ##################################
     
+#  Connect to database
+database = sqlite3.connect("data.db")
+cursor = database.cursor()
+#  Check if data table exists in database and create it if not
+q = ("table", "data")
+database.execute("SELECT count(name) FROM sqlite_master WHERE type=? AND name=?", q)
+if database.fetchone()[0] < 1:
+    database.execute("""CREATE TABLE data
+                (time date, windspeed int, temperature int, humidity int, pitch int,
+                    airpressure int, dragforce int, liftforce int)""")
 
 stop_receiver_event = threading.Event()
-sensor_data = dataobject.DataObject()
+sensor_data = dataobject.DataObject(cursor)
 comm = idmserial.SerialCommunicator(sensor_data,stop_receiver_event)
+
+
 
 
 
