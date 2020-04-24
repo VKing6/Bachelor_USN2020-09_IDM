@@ -442,10 +442,7 @@ def create_window_graph(windspeed,drag,windforce,reqpower):
     
     fig.add_subplot(111).plot(windspeed,drag, 'r--', label = "Drag") #plotter y og x axes NB DE MÅ VÆRE LIKE LANGE OM DU VIL HA EN NY LINJE COPY PAST DENNE
     
-    fig.add_subplot(111).plot(windspeed,windforce, 'b--', label = "Windforce") 
-    
-    fig.add_subplot(111).plot(windspeed,reqpower, 'g--', label = "Requierd power") 
-    
+
     
     
     fig.legend()
@@ -578,6 +575,7 @@ app = SeaofBTCapp()
 
 #app.resizable(0, 0)
 #app.attributes("-type","splash")
+
 
 app.mainloop()
 
