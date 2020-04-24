@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import tkinter as tk
+import time
+
 from tkinter import filedialog
+from tkinter import simpledialog
 from pandas import DataFrame
 #from tkinter import Tk, Canvas, Frame, BOTH
 #from math import * 
@@ -17,12 +20,6 @@ from matplotlib.figure import Figure
 import datetime as dt
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-import sys
-sys.path.insert(0, "/home/pi/Projects/IDM/IntComm")
-import dataobject
-import idmserial
-import threading
-
 #from PIL import Image,ImageTk
 
 LARGE_FONT= ("Verdana", 12)
@@ -30,9 +27,8 @@ LARGE_FONT= ("Verdana", 12)
 ######################################## initialization  ##################################
     
 
-stop_receiver_event = threading.Event()
-sensor_data = dataobject.DataObject()
-comm = idmserial.SerialCommunicator(sensor_data,stop_receiver_event)
+
+serialArduino = serial.Serial('COM6', 9600)
 
 
 
@@ -120,7 +116,7 @@ class StartPage(tk.Frame):
         labelsp4 = tk.Label(self, text="Project members: ", bg='red', fg='white', font=('helvetica', 30, 'bold'))
         labelsp4.grid(row = 2 , column = 0, columnspan = 4)   
    
-        Kristian = tk.Label(self, text="Kristian Auestad", font=('helvetica', 30, 'bold'))
+        Kristian = tk.Label(self, text="Kristian Auestasd", font=('helvetica', 30, 'bold'))
         Kristian.grid(row = 3 , column = 0, columnspan = 4)
     
         steffen = tk.Label(self, text="Steffen Barskrind",  font=('helvetica', 30, 'bold'))
@@ -257,29 +253,8 @@ class PageTwo(tk.Frame):
         def empty():
             test = 3
             
-        
-        self.windspeed   = tk.IntVar()
-        self.temperature = tk.IntVar()
-        self.humidity    = tk.IntVar()
-        self.pitch       = tk.IntVar()
-        self.airpressure = tk.IntVar()
-        self.dragforce   = tk.IntVar()
-        self.liftforce   = tk.IntVar()
-            
-        def update_display():
-            self.sensor_data = sensor_data.get_data()
-            self.windspeed.set(self.sensor_data["windspeed"])
-            self.temperature.set(self.sensor_data["temperature"])
-            self.humidity.set(self.sensor_data["humidity"])
-            self.pitch.set(self.sensor_data["pitch"])
-            self.airpressure.set(self.sensor_data["airpressure"])
-            self.dragforce.set(self.sensor_data["dragforce"])
-            self.liftforce.set(self.sensor_data["liftforce"])
-            #ableAirV.config(text=str(self.ws))
-            
-            self.after(500, update_display)
-            
 
+        tempvar = tk.IntVar()
         
         def temp2():
 
@@ -293,7 +268,7 @@ class PageTwo(tk.Frame):
             self.after(5000, temp_update)
         
      
-        #temp_update()            
+        temp_update()            
         
                
         
@@ -325,16 +300,16 @@ class PageTwo(tk.Frame):
 
         AirVelocity = tk.Button(self, text="Air Velocity",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         AirVelocity.grid(row = 4, column = 0)  
-        lableAirV = tk.Label(self, text="5 m/s", textvariable = self.windspeed, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirV = tk.Label(self, text="5 m/s",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableAirV.grid(row = 4, column = 1)  
 
 
         spacer4 = tk.Label(self, text="")
         spacer4.grid(row = 5 , column = 0)
 
-        Airtemp = tk.Button(self, text="Air Temprature",command=grphtest,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        Airtemp = tk.Button(self, text="Air Temprature",command=lambda: create_window_graph(yval=get_tempval(),xval=get_timeval() ),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         Airtemp.grid(row = 6, column = 0)  
-        labletemp = tk.Label(self, textvariable = self.temperature ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        labletemp = tk.Label(self, textvariable = tempvar ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         labletemp.grid(row = 6, column = 1)  
 
 
@@ -343,7 +318,7 @@ class PageTwo(tk.Frame):
 
         Airhum = tk.Button(self, text="Air Humidity",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         Airhum.grid(row = 8, column = 0)  
-        lableAirhum = tk.Label(self, text="1500", textvariable=self.humidity, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirhum = tk.Label(self, text="1500",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableAirhum.grid(row = 8, column = 1)  
 
 
@@ -351,25 +326,66 @@ class PageTwo(tk.Frame):
 
         Airpress = tk.Button(self, text="Air pressure",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         Airpress.grid(row = 4, column = 2)  
-        lableAirpress = tk.Label(self, text="15 kg/m3", textvariable=self.airpressure, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirpress = tk.Label(self, text="15 kg/m3",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableAirpress.grid(row = 4, column = 3)  
 
 
 
         forceH = tk.Button(self, text="Force Horizontal",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         forceH.grid(row = 6, column = 2)  
-        lableforceH = tk.Label(self, text="2 N", textvariable=self.dragforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableforceH = tk.Label(self, text="2 N",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableforceH.grid(row = 6, column = 3) 
 
 
         froceV = tk.Button(self, text="Force Vertical",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         froceV.grid(row = 8, column = 2)  
-        lablefroceV = tk.Label(self, text="15 N", textvariable=self.liftforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lablefroceV = tk.Label(self, text="15 N",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lablefroceV.grid(row = 8, column = 3) 
         
-        self.after(0, update_display)
+        value_get = tk.Entry(self)
+        value_get.grid(row=9, column=1)
+        value_get.insert(0,0)
+        
+        
+        def get_tempval():
+            
+            x = []
+            s = int(value_get.get())
+            for i in range(s):
+                temp = float(serialArduino.readline())               
+                x.append(temp)
+                time.sleep(1)
+                print(x)
+            
+            return x
 
 
+        def get_timeval():
+
+            y = []
+            b = int(value_get.get())
+            for i in range(b):
+
+                y.append(dt.datetime.now().strftime('%H:%M:%S')) 
+                time.sleep(1)
+                print(y)
+            
+            return y
+        
+  
+            
+        
+        def all_save():
+            
+            get_timeval()
+            get_tempval()
+            
+            
+
+
+        froceV2 = tk.Button(self, text="Save values",command=all_save,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        froceV2.grid(row = 9, column = 2)  
+        
 
  ###################################  PAGE 3 Røykprobe  #####################################################   
 
@@ -450,15 +466,16 @@ def grphtest():
         plt.title('Time')
         plt.ylabel('Degree C')
     
+    
 
-
+        
     ani= animation.FuncAnimation(fig, animate, fargs=(xs, ys), interval=5000)
     plt.show(ani)
 
 
  ################################################################################################       
     
-def create_window_graph(windspeed,drag,windforce,reqpower):
+def create_window_graph(xval,yval,):
    
     window = tk.Toplevel()
     
@@ -470,7 +487,11 @@ def create_window_graph(windspeed,drag,windforce,reqpower):
     
     fig = Figure(figsize=(5, 4), dpi=150)
     
+<<<<<<< Updated upstream
     fig.add_subplot(111).plot(windspeed,drag, 'r--', label = "Drag") #plotter y og x axes NB DE MÅ VÆRE LIKE LANGE OM DU VIL HA EN NY LINJE COPY PAST DENNE
+=======
+    fig.add_subplot(111).plot(xval,yval, 'r--', label = "Temp") #plotter y og x axes NB DE MÅ VÆRE LIKE LANGE OM DU VIL HA EN NY LINJE COPY PAST DENNE
+>>>>>>> Stashed changes
     
 
     
@@ -546,9 +567,9 @@ def create_window_picture(pic):
 
 ################################################################################################
         
-def exportCSV ():
+def exportCSV (windpeed, temp):
   
-    values = {'Speed': Windspeed}
+    values = {'Speed': Windspeed}, {'Temp': temp}
     
     df = DataFrame( values,columns= ['Speed', 'Drag','windforce','Requierd power',  'Areal','lift']) 
     
@@ -609,7 +630,7 @@ app = SeaofBTCapp()
 
 app.mainloop()
 
-comm.close()
+
 
 
 
