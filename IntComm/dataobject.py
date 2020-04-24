@@ -4,10 +4,8 @@ import datetime
 import sqlite3
 
 class DataObject(object):
-    def __init__(self, database_cursor, lock=None):
+    def __init__(self, lock=None):
         self.__lock = lock or threading.RLock()
-
-        self.__db = database_cursor
 
         self.__datestring = "fnord"
         self.__datetime = datetime.datetime(1900,1,1)
@@ -20,7 +18,7 @@ class DataObject(object):
         self.__liftforce = -1
         self.__bools = -1
 
-    def amend_db(self):
+    def amend_db(self, dbcursor):
         with self.__lock:
             self.__db.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                (self.__datestring, self.__windspeed, self.__temperature,
@@ -53,8 +51,6 @@ class DataObject(object):
             self.__dragforce = int(dragforce)
             self.__liftforce = int(liftforce)
             self.__bools = int(bools)
-
-            self.amend_db()
                     
     def get_data(self):
         with self.__lock:

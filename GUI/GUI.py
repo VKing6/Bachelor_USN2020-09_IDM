@@ -40,9 +40,10 @@ if cursor.fetchone()[0] < 1:
     cursor.execute("""CREATE TABLE data
                 (time date, windspeed int, temperature int, humidity int, pitch int,
                     airpressure int, dragforce int, liftforce int)""")
+    database.commit()
 
 stop_receiver_event = threading.Event()
-sensor_data = dataobject.DataObject(cursor)
+sensor_data = dataobject.DataObject()
 comm = idmserial.SerialCommunicator(sensor_data,stop_receiver_event)
 
 
@@ -613,6 +614,16 @@ def NewWindow():
     return window
 
 
+def amend_database(data_object, database):
+    c = database.cursor()
+    data = data_object.get_data()
+    c.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            data["timestring"], data["windspeed"], data["temperature"], data["humidity"],
+            data["pitch"], data["airpressure"], data["dragforce"], data["liftforce"])
+    database.commit()
+    app.after(1000, amend_database)
+
+
 
 
 
@@ -623,6 +634,8 @@ app = SeaofBTCapp()
 #app.attributes("-type","splash")
 
 app.mainloop()
+
+app.after(2000, amend_database)
 
 comm.close()
 
