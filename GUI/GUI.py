@@ -88,6 +88,7 @@ class SeaofBTCapp(tk.Tk):
         self.title("IDM")
 
 
+
     def show_frame(self, cont):
 
         frame = self.frames[cont]
@@ -614,14 +615,15 @@ def NewWindow():
     return window
 
 
-def amend_database(data_object, database):
-    c = database.cursor()
-    data = data_object.get_data()
+def amend_database(args):
+    data, db = args
+    c = db.cursor()
+    d = data.get_data()
     c.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            data["timestring"], data["windspeed"], data["temperature"], data["humidity"],
-            data["pitch"], data["airpressure"], data["dragforce"], data["liftforce"])
-    database.commit()
-    app.after(1000, amend_database)
+            (d["timestring"], d["windspeed"], d["temperature"], d["humidity"],
+            d["pitch"], d["airpressure"], d["dragforce"], d["liftforce"]))
+    db.commit()
+    app.after(1000, amend_database, args)
 
 
 
@@ -635,7 +637,7 @@ app = SeaofBTCapp()
 
 app.mainloop()
 
-app.after(2000, amend_database)
+app.after(2000, amend_database, (sensor_data, database))
 
 comm.close()
 

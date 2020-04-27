@@ -19,7 +19,7 @@ class SerialCommunicator:
                 in_data = self.ser.readline()
                 if len(in_data) > 0:
                     self.data.parse_datastring(in_data)
-                    #print(self.data.get_data())  # Debug
+                    print(self.data.get_data())  # Debug
             print(__name__, "Stopping")
 
 
@@ -43,9 +43,9 @@ class SerialCommunicator:
         self.receiver = self.SerialReceiver(self.ser, self.data, self.stop_event)
         self.receiver.start()
 
-    def __del__(self):  # Destructor, but doesn't work
-        print(__name__, "Destructor")
-        self.close()
+    #def __del__(self):  # Destructor, but doesn't work
+        #print(__name__, "Destructor")
+        #self.close()
         
     def close(self):
         print(__name__, "Close")
