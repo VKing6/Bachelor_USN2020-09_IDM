@@ -99,10 +99,11 @@ class IDMcontrollerGUI(tk.Tk):
     def amend_database(self):
         c = self.cursor
         d = self.sensor_data.get_data()
-        c.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                (d["timestring"], d["windspeed"], d["temperature"], d["humidity"],
-                d["pitch"], d["airpressure"], d["dragforce"], d["liftforce"]))
-        self.database.commit()
+        if c.time.year > 2000 and c.time.year < 2100:  # Don't store bad/debug values
+            c.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    (d["timestring"], d["windspeed"], d["temperature"], d["humidity"],
+                    d["pitch"], d["airpressure"], d["dragforce"], d["liftforce"]))
+            self.database.commit()
         self.after(1000, self.amend_database)
 
 
