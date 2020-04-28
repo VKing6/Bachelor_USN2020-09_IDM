@@ -30,22 +30,6 @@ LARGE_FONT= ("Verdana", 12)
 
 ######################################## initialization  ##################################
     
-#  Connect to database
-database = sqlite3.connect("data.db")
-cursor = database.cursor()
-#  Check if data table exists in database and create it if not
-q = ("table", "data")
-cursor.execute("SELECT count(name) FROM sqlite_master WHERE type=? AND name=?", q)
-if cursor.fetchone()[0] < 1:
-    cursor.execute("""CREATE TABLE data
-                (time date, windspeed int, temperature int, humidity int, pitch int,
-                    airpressure int, dragforce int, liftforce int)""")
-    database.commit()
-
-stop_receiver_event = threading.Event()
-sensor_data = dataobject.DataObject()
-comm = idmserial.SerialCommunicator(sensor_data,stop_receiver_event)
-
 
 
 
@@ -53,7 +37,7 @@ comm = idmserial.SerialCommunicator(sensor_data,stop_receiver_event)
 
 ########################### PAGE FUNCTION #######################################+
 
-class SeaofBTCapp(tk.Tk):
+class IDMcontrollerGUI(tk.Tk):
 
     def __init__(self, *args, **kwargs): 
         
@@ -70,7 +54,7 @@ class SeaofBTCapp(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, PageOne, PageTwo, PageThree): #antall sider som skal lages i programmet
+        for F in (StartPage, PageControl, PageMeasurements, PageSmoke): #antall sider som skal lages i programmet
 
             frame = F(container, self)
             
@@ -87,6 +71,24 @@ class SeaofBTCapp(tk.Tk):
         #self.geometry("800x480")
         self.title("IDM")
 
+        #  Connect to database
+        self.database = sqlite3.connect("data.db")
+        self.cursor = self.database.cursor()
+        #  Check if data table exists in database and create it if not
+        q = ("table", "data")
+        self.cursor.execute("SELECT count(name) FROM sqlite_master WHERE type=? AND name=?", q)
+        if self.cursor.fetchone()[0] < 1:
+            self.cursor.execute("""CREATE TABLE data
+                        (time date, windspeed int, temperature int, humidity int, pitch int,
+                            airpressure int, dragforce int, liftforce int)""")
+            self.database.commit()
+
+        self.stop_receiver_event = threading.Event()
+        self.sensor_data = dataobject.DataObject()
+        self.comm = idmserial.SerialCommunicator(self.sensor_data, self.stop_receiver_event)
+
+        self.after(2000, self.amend_database)
+
 
 
     def show_frame(self, cont):
@@ -94,6 +96,18 @@ class SeaofBTCapp(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
+    def amend_database(self):
+        c = self.cursor()
+        d = self.sensor_data.get_data()
+        c.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (d["timestring"], d["windspeed"], d["temperature"], d["humidity"],
+                d["pitch"], d["airpressure"], d["dragforce"], d["liftforce"]))
+        self.database.commit()
+        self.after(1000, self.amend_database)
+
+
+    def __del__(self):
+        self.comm.close()
 
 
  ###################################  Start page #####################################################   
@@ -113,13 +127,13 @@ class StartPage(tk.Frame):
         SpeedAndPitch = tk.Button(self, text="Menu",height = 2, width = 15,command=lambda: controller.show_frame(StartPage), bg='blue', fg='white', font=('helvetica', 30, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 0)
         
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageControl), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 1)
         
-        Measurments = tk.Button(self, text="Measurments",height = 2, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        Measurments = tk.Button(self, text="Measurments",height = 2, width = 13, command=lambda: controller.show_frame(PageMeasurements), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         Measurments.grid(row = 0 , column = 2)   
         
-        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageSmoke), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         probe.grid(row = 0, column = 3)
         
         
@@ -161,7 +175,7 @@ class StartPage(tk.Frame):
  ###################################  PAGE 1 Adjust speed and pitch #####################################################   
 
 
-class PageOne(tk.Frame):
+class PageControl(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -195,13 +209,13 @@ class PageOne(tk.Frame):
         SpeedAndPitch = tk.Button(self, text="Menu",height = 2, width = 15,command=lambda: controller.show_frame(StartPage), bg='blue', fg='white', font=('helvetica', 30, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 0)
         
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageControl), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 1)
         
-        Measurments = tk.Button(self, text="Measurments",height = 2, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        Measurments = tk.Button(self, text="Measurments",height = 2, width = 13, command=lambda: controller.show_frame(PageMeasurements), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         Measurments.grid(row = 0 , column = 2)   
         
-        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageSmoke), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         probe.grid(row = 0, column = 3)
         
         
@@ -264,7 +278,7 @@ class PageOne(tk.Frame):
  ###################################  PAGE 2 Measurements  #####################################################   
 
 
-class PageTwo(tk.Frame):
+class PageMeasurements(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -315,13 +329,13 @@ class PageTwo(tk.Frame):
         SpeedAndPitch = tk.Button(self, text="Menu",height = 2, width = 15,command=lambda: controller.show_frame(StartPage), bg='blue', fg='white', font=('helvetica', 30, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 0)
         
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageControl), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 1)
         
-        Measurments = tk.Button(self, text="Measurments",height = 2, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        Measurments = tk.Button(self, text="Measurments",height = 2, width = 13, command=lambda: controller.show_frame(PageMeasurements), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         Measurments.grid(row = 0 , column = 2)   
         
-        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageSmoke), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         probe.grid(row = 0, column = 3)
         
         
@@ -389,7 +403,7 @@ class PageTwo(tk.Frame):
  ###################################  PAGE 3 Røykprobe  #####################################################   
 
 
-class PageThree(tk.Frame):
+class PageSmoke(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -398,13 +412,13 @@ class PageThree(tk.Frame):
         SpeedAndPitch = tk.Button(self, text="Menu",height = 2, width = 15,command=lambda: controller.show_frame(StartPage), bg='blue', fg='white', font=('helvetica', 30, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 0)
         
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageControl), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 1)
         
-        Measurments = tk.Button(self, text="Measurments",height = 2, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        Measurments = tk.Button(self, text="Measurments",height = 2, width = 13, command=lambda: controller.show_frame(PageMeasurements), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         Measurments.grid(row = 0 , column = 2)   
         
-        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageSmoke), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         probe.grid(row = 0, column = 3)
         
         
@@ -424,14 +438,6 @@ class PageThree(tk.Frame):
         bar = tk.Scale(self, from_=-200, to=200,orient=tk.HORIZONTAL, length=2000,tickinterval=50, width = 100 ,font=('helvetica', 10, 'bold'))
         bar.grid(row = 5 , column = 0, columnspan =4)  
   
-
-
-
-
-
-
-
-
 
 
 
@@ -615,31 +621,11 @@ def NewWindow():
     return window
 
 
-def amend_database(args):
-    data, db = args
-    c = db.cursor()
-    d = data.get_data()
-    c.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            (d["timestring"], d["windspeed"], d["temperature"], d["humidity"],
-            d["pitch"], d["airpressure"], d["dragforce"], d["liftforce"]))
-    db.commit()
-    app.after(1000, amend_database, args)
 
-
-
-
-
-
-app = SeaofBTCapp()
+app = IDMcontrollerGUI()
 
 #app.resizable(0, 0)
 #app.attributes("-type","splash")
 
 app.mainloop()
-
-app.after(2000, amend_database, (sensor_data, database))
-
-comm.close()
-
-
 

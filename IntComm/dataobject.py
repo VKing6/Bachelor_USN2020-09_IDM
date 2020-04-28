@@ -18,14 +18,6 @@ class DataObject(object):
         self.__liftforce = -1
         self.__bools = -1
 
-    def amend_db(self, dbcursor):
-        with self.__lock:
-            self.__db.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                               (self.__datestring, self.__windspeed, self.__temperature,
-                                self.__humidity, self.__pitch, self.__airpressure, 
-                                self.__dragforce, self.__liftforce))
-            self.__db.commit()
-
     def parse_datastring(self, data):
         with self.__lock:
             try:
@@ -41,8 +33,13 @@ class DataObject(object):
                     humidity, pitch, bools = -1, -1, -1
                     airpressure, dragforce, liftforce = -1, -1, -1
             
-            self.__datestring = datestring.decode("utf-8")
-            self.__datetime = datetime.datetime.fromisoformat(self.__datestring)
+            if isinstance(self.__datestring, str):
+                self.__datestring = datestring.decode("utf-8")
+                self.__datetime = datetime.datetime.fromisoformat(self.__datestring)
+                print(__name__. "str:", self.__datestring)
+            else:
+                self.__datestring = datestring
+                print(__name__, "not str:", self.__datestring)
             self.__windspeed = int(windspeed)
             self.__temperature = int(temperature)
             self.__humidity = int(humidity)
