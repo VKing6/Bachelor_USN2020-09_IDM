@@ -31,14 +31,18 @@ LARGE_FONT= ("Verdana", 12)
 conn = sqlite3.connect('example.db')
 c = conn.cursor()
 
-#c.execute("""CREATE TABLE data
-                  #  (time date, windspeed int, temperature int, humidity int, pitch int,
-                    # airpressure int, dragforce int, liftforce int)""") 
+# c.execute("""CREATE TABLE data
+#                     (time date, windspeed int, temperature int, humidity int, pitch int,
+#                      airpressure int, dragforce int, liftforce int)""") 
 
 data = [('2020-04-24T11:16:33', 364, 133, 342, 10, 1015, 10, 31),
- ('2020-04-25T11:17:44', 2, 2113, 14, 10, 1015, 10, 31),
- ('2020-04-27T11:18:55', 36, 155, 56, 10, 1015, 10, 31),
- ('2020-04-28T11:19:33', 14, 144, 2, 10, 1015, 10, 31)]
+        ('2020-04-24T11:16:34', 2, 2113, 14, 10, 1015, 10, 31),
+        ('2020-04-24T11:16:35', 36, 155, 56, 10, 1015, 10, 31),
+        ('2020-04-24T11:16:36', 14, 144, 2, 10, 1015, 10, 31),
+        ('2020-04-24T11:16:37', 364, 133, 342, 10, 1015, 10, 31),
+        ('2020-04-24T11:16:38', 2, 2113, 14, 10, 1015, 10, 31),
+        ('2020-04-24T11:16:39', 36, 155, 56, 10, 1015, 10, 31),
+        ('2020-04-24T11:16:40', 14, 144, 2, 10, 1015, 10, 31)]
 
 
 c.executemany("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)", data)
@@ -435,11 +439,11 @@ class PageFour(tk.Frame):
         
         def change_dropdown(*args):
 
-            print( tkvar.get())
-            for row in c.execute('SELECT * FROM data  '):
+            print(tkvar.get()[2:-3], tkvar2.get()[2:-3])
+            q = (tkvar.get()[2:-3], tkvar2.get()[2:-3])
+            for row in c.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q):
                 print(row)
          
-            
             
             
         tkvar2 = tk.StringVar(self)
