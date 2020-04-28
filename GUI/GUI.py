@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 import tkinter as tk
-import time
-
 from tkinter import filedialog
-from tkinter import simpledialog
 from pandas import DataFrame
 #from tkinter import Tk, Canvas, Frame, BOTH
 #from math import * 
@@ -21,16 +18,16 @@ import datetime as dt
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 #from PIL import Image,ImageTk
-
+import sqlite3
+import os
+import csv
+    
 LARGE_FONT= ("Verdana", 12)
 
 ######################################## initialization  ##################################
     
 
 
-<<<<<<< Updated upstream
-serialArduino = serial.Serial('COM6', 9600)
-=======
 conn = sqlite3.connect('example.db')
 c = conn.cursor()
 
@@ -39,14 +36,13 @@ c = conn.cursor()
                     # airpressure int, dragforce int, liftforce int)""") 
 
 data = [('2020-04-24T11:16:33', 364, 133, 342, 10, 1015, 10, 31),
- ('2020-04-24T11:16:33', 2, 133, 342, 10, 1015, 10, 31),
- ('2020-04-24T11:16:33', 36, 133, 342, 10, 1015, 10, 31),
- ('2020-04-24T11:16:33', 14, 133, 342, 10, 1015, 10, 31)]
+ ('2020-04-25T11:17:44', 2, 2113, 14, 10, 1015, 10, 31),
+ ('2020-04-27T11:18:55', 36, 155, 56, 10, 1015, 10, 31),
+ ('2020-04-28T11:19:33', 14, 144, 2, 10, 1015, 10, 31)]
 
 
 c.executemany("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)", data)
 
->>>>>>> Stashed changes
 
 
 
@@ -275,25 +271,7 @@ class PageTwo(tk.Frame):
         
         def empty():
             test = 3
-            
-
-        tempvar = tk.IntVar()
-        
-        def temp2():
-
-            temp2 = float(serialArduino.readline()) 
-            tempvar.set(temp2)
-              
-            
-           
-        def temp_update():
-            temp2()
-            self.after(5000, temp_update)
-        
-     
-        temp_update()            
-        
-               
+  
         
         #menue = tk.Button(self, text="Menu",height = 2, width = 13,command=lambda: controller.show_frame(StartPage), bg='blue', fg='white', font=('helvetica', 30, 'bold')) # 
         #menue.grid(row = 0 , column = 0)
@@ -334,13 +312,9 @@ class PageTwo(tk.Frame):
         spacer4 = tk.Label(self, text="")
         spacer4.grid(row = 5 , column = 0)
 
-<<<<<<< Updated upstream
-        Airtemp = tk.Button(self, text="Air Temprature",command=lambda: create_window_graph(yval=get_tempval(),xval=get_timeval() ),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
-=======
         Airtemp = tk.Button(self, text="Air Temprature",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
->>>>>>> Stashed changes
         Airtemp.grid(row = 6, column = 0)  
-        labletemp = tk.Label(self, textvariable = tempvar ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        labletemp = tk.Label(self, text =" 25" ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         labletemp.grid(row = 6, column = 1)  
 
 
@@ -372,51 +346,9 @@ class PageTwo(tk.Frame):
         froceV.grid(row = 8, column = 2)  
         lablefroceV = tk.Label(self, text="15 N",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lablefroceV.grid(row = 8, column = 3) 
-        
-        value_get = tk.Entry(self)
-        value_get.grid(row=9, column=1)
-        value_get.insert(0,0)
-        
-        
-        def get_tempval():
-            
-            x = []
-            s = int(value_get.get())
-            for i in range(s):
-                temp = float(serialArduino.readline())               
-                x.append(temp)
-                time.sleep(1)
-                print(x)
-            
-            return x
 
-
-        def get_timeval():
-
-            y = []
-            b = int(value_get.get())
-            for i in range(b):
-
-                y.append(dt.datetime.now().strftime('%H:%M:%S')) 
-                time.sleep(1)
-                print(y)
-            
-            return y
-        
-  
-            
-        
-        def all_save():
-            
-            get_timeval()
-            get_tempval()
-            
-            
-
-
-        froceV2 = tk.Button(self, text="Save values",command=all_save,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
-        froceV2.grid(row = 9, column = 2)  
-        
+        export = tk.Button(self, text="Export",command=exportCSV,height = 2 , width =15, bg='red', fg='black', font=('helvetica', 20, 'bold')) # 
+        export.grid(row = 9, column = 2)  
 
  ###################################  PAGE 3 Røykprobe  #####################################################   
 
@@ -486,8 +418,40 @@ class PageFour(tk.Frame):
         
         export = tk.Button(self, text="Export data",height = 2, width = 13,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         export.grid(row = 0, column = 3)
+        
+        
+        
+        
+        
+        tkvar = tk.StringVar(self)
+        
+        # Dictionary with options
+        choices = c.execute('SELECT time date FROM data')
+        tkvar.set('Select date and time') 
+        
+        popupMenu = tk.OptionMenu(self, tkvar, *choices)
+        popupMenu.grid(row = 1 , column = 1)
 
+        
+        def change_dropdown(*args):
 
+            print( tkvar.get())
+            for row in c.execute('SELECT * FROM data  '):
+                print(row)
+         
+            
+            
+            
+        tkvar2 = tk.StringVar(self)
+        
+        choices2 = c.execute('SELECT time date FROM data')
+        tkvar2.set('Select date and time')
+        
+        popupMenu2 = tk.OptionMenu(self, tkvar2, *choices2)
+        popupMenu2.grid(row = 1 , column = 2)
+
+        export2 = tk.Button(self, text="Export ",height = 2, width = 13,command=change_dropdown, bg='red', fg='white', font=('helvetica', 30, 'bold')) # 
+        export2.grid(row = 2, column = 0)
 
 ###### GLOBAL FUNCTIONS ######################################################################
 """ 
@@ -517,16 +481,15 @@ def grphtest():
         plt.title('Time')
         plt.ylabel('Degree C')
     
-    
 
-        
+
     ani= animation.FuncAnimation(fig, animate, fargs=(xs, ys), interval=5000)
     plt.show(ani)"""
 
 
  ################################################################################################       
     
-def create_window_graph(xval,yval,):
+def create_window_graph(windspeed,drag,windforce,reqpower):
    
     window = tk.Toplevel()
     
@@ -538,11 +501,7 @@ def create_window_graph(xval,yval,):
     
     fig = Figure(figsize=(5, 4), dpi=150)
     
-<<<<<<< Updated upstream
     fig.add_subplot(111).plot(windspeed,drag, 'r--', label = "Drag") #plotter y og x axes NB DE MÅ VÆRE LIKE LANGE OM DU VIL HA EN NY LINJE COPY PAST DENNE
-=======
-    fig.add_subplot(111).plot(xval,yval, 'r--', label = "Temp") #plotter y og x axes NB DE MÅ VÆRE LIKE LANGE OM DU VIL HA EN NY LINJE COPY PAST DENNE
->>>>>>> Stashed changes
     
 
     
@@ -618,18 +577,21 @@ def create_window_picture(pic):
 
 ################################################################################################
         
-def exportCSV (windpeed, temp):
+def exportCSV ():
   
-    values = {'Speed': Windspeed}, {'Temp': temp}
-    
-    df = DataFrame( values,columns= ['Speed', 'Drag','windforce','Requierd power',  'Areal','lift']) 
-    
-    
-    
     export_file_path = filedialog.asksaveasfilename(defaultextension='.csv')
-    df.to_csv (export_file_path, index = False, header=True)    
+
+    print ("Exporting data into CSV............")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM data  ")
     
+    with open(export_file_path, "w") as csv_file:
+        csv_writer = csv.writer(csv_file)
+        csv_writer.writerow([i[0] for i in cursor.description])
+        csv_writer.writerows(cursor)
+    #dirpath = os.getcwd() + export_file_path
     
+   
     
 
 
