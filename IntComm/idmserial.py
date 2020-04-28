@@ -19,7 +19,7 @@ class SerialCommunicator:
                 in_data = self.ser.readline()
                 if len(in_data) > 0:
                     self.data.parse_datastring(in_data)
-                    print(self.data.get_data())  # Debug
+                    #print(self.data.get_data())  # Debug
             print(__name__, "Stopping")
 
 

@@ -97,7 +97,7 @@ class IDMcontrollerGUI(tk.Tk):
         frame.tkraise()
 
     def amend_database(self):
-        c = self.cursor()
+        c = self.cursor
         d = self.sensor_data.get_data()
         c.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                 (d["timestring"], d["windspeed"], d["temperature"], d["humidity"],
@@ -107,6 +107,7 @@ class IDMcontrollerGUI(tk.Tk):
 
 
     def __del__(self):
+        print(__name__, "close")
         self.comm.close()
 
 
@@ -296,7 +297,7 @@ class PageMeasurements(tk.Frame):
         self.liftforce   = tk.IntVar()
             
         def update_display():
-            self.sensor_data = sensor_data.get_data()
+            self.sensor_data = app.sensor_data.get_data()
             self.windspeed.set(self.sensor_data["windspeed"])
             self.temperature.set(self.sensor_data["temperature"])
             self.humidity.set(self.sensor_data["humidity"])
@@ -627,5 +628,8 @@ app = IDMcontrollerGUI()
 #app.resizable(0, 0)
 #app.attributes("-type","splash")
 
+# Run the program
 app.mainloop()
 
+# Shut down the communicator thread when the GUI closes
+app.comm.close()

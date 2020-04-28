@@ -36,7 +36,7 @@ class DataObject(object):
             if isinstance(self.__datestring, str):
                 self.__datestring = datestring.decode("utf-8")
                 self.__datetime = datetime.datetime.fromisoformat(self.__datestring)
-                print(__name__. "str:", self.__datestring)
+                print(__name__, "str:", self.__datestring)
             else:
                 self.__datestring = datestring
                 print(__name__, "not str:", self.__datestring)
