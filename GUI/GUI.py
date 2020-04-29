@@ -484,16 +484,34 @@ class PageFour(tk.Frame):
         choices = c.execute('SELECT time date FROM data')
         tkvar.set('Select date and time') 
         
+        lablemen= tk.Label(self, text = "Select start time", font=('helvetica', 20, 'bold'))
+        lablemen.grid(row = 1 , column = 1)
+        
         popupMenu = tk.OptionMenu(self, tkvar, *choices)
-        popupMenu.grid(row = 1 , column = 1)
+        popupMenu.config(font=('helvetica', 15, 'bold'))
+
+        popupMenu.grid(row = 2 , column = 1)
 
         
-        def change_dropdown(*args):
+        def export(*args):
 
-            print(tkvar.get()[2:-3], tkvar2.get()[2:-3])
+            #print(tkvar.get()[2:-3], tkvar2.get()[2:-3])
             q = (tkvar.get()[2:-3], tkvar2.get()[2:-3])
-            for row in c.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q):
-                print(row)
+           # for row in c.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q):
+                #print(row)
+            if( tkvar.get()[2:-3]>=tkvar2.get()[2:-3]):
+                tk.messagebox.showerror("Error", "Start time can not be less or equal to end time")
+            else:
+                export_file_path = filedialog.asksaveasfilename(defaultextension='.csv')
+            
+                print ("Exporting data into CSV............")
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q)
+                
+                with open(export_file_path, "w") as csv_file:
+                    csv_writer = csv.writer(csv_file)
+                    csv_writer.writerow([i[0] for i in cursor.description])
+                    csv_writer.writerows(cursor)
          
             
             
@@ -502,11 +520,19 @@ class PageFour(tk.Frame):
         choices2 = c.execute('SELECT time date FROM data')
         tkvar2.set('Select date and time')
         
+        lablemen= tk.Label(self, text = "Select end time", font=('helvetica', 20, 'bold'))
+        lablemen.grid(row = 1 , column = 2)
+        
         popupMenu2 = tk.OptionMenu(self, tkvar2, *choices2)
-        popupMenu2.grid(row = 1 , column = 2)
+        popupMenu2.grid(row = 2 , column = 2)
 
-        export2 = tk.Button(self, text="Export ",height = 2, width = 13,command=change_dropdown, bg='red', fg='white', font=('helvetica', 30, 'bold')) # 
+
+        export2 = tk.Button(self, text="Export ",height = 2, width = 13,command=export, bg='red', fg='white', font=('helvetica', 30, 'bold')) # 
         export2.grid(row = 2, column = 0)
+        
+        
+        grf = tk.Button(self, text="graf ",height = 2, width = 13,command=export, bg='red', fg='white', font=('helvetica', 30, 'bold')) # 
+        grf.grid(row = 3, column = 0)
 
 ###### GLOBAL FUNCTIONS ######################################################################
 """ 
