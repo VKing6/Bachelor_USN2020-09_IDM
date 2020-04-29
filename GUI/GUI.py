@@ -17,6 +17,11 @@ from matplotlib.figure import Figure
 import datetime as dt
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import sys
+sys.path.insert(0, "/home/pi/Projects/IDM/IntComm")
+import dataobject
+import idmserial
+import threading
 #from PIL import Image,ImageTk
 import sqlite3
 import os
@@ -26,26 +31,6 @@ LARGE_FONT= ("Verdana", 12)
 
 ######################################## initialization  ##################################
     
-
-
-conn = sqlite3.connect('example.db')
-c = conn.cursor()
-
-# c.execute("""CREATE TABLE data
-#                     (time date, windspeed int, temperature int, humidity int, pitch int,
-#                      airpressure int, dragforce int, liftforce int)""") 
-
-data = [('2020-04-24T11:16:33', 364, 133, 342, 10, 1015, 10, 31),
-        ('2020-04-24T11:16:34', 2, 2113, 14, 10, 1015, 10, 31),
-        ('2020-04-24T11:16:35', 36, 155, 56, 10, 1015, 10, 31),
-        ('2020-04-24T11:16:36', 14, 144, 2, 10, 1015, 10, 31),
-        ('2020-04-24T11:16:37', 364, 133, 342, 10, 1015, 10, 31),
-        ('2020-04-24T11:16:38', 2, 2113, 14, 10, 1015, 10, 31),
-        ('2020-04-24T11:16:39', 36, 155, 56, 10, 1015, 10, 31),
-        ('2020-04-24T11:16:40', 14, 144, 2, 10, 1015, 10, 31)]
-
-
-c.executemany("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)", data)
 
 
 
@@ -87,12 +72,45 @@ class SeaofBTCapp(tk.Tk):
         #self.geometry("800x480")
         self.title("IDM")
 
+        #  Connect to database
+        self.database = sqlite3.connect("data.db")
+        self.cursor = self.database.cursor()
+        #  Check if data table exists in database and create it if not
+        q = ("table", "data")
+        self.cursor.execute("SELECT count(name) FROM sqlite_master WHERE type=? AND name=?", q)
+        if self.cursor.fetchone()[0] < 1:
+            self.cursor.execute("""CREATE TABLE data
+                        (time date, windspeed int, temperature int, humidity int, pitch int,
+                            airpressure int, dragforce int, liftforce int)""")
+            self.database.commit()
+
+        self.stop_receiver_event = threading.Event()
+        self.sensor_data = dataobject.DataObject()
+        self.comm = idmserial.SerialCommunicator(self.sensor_data, self.stop_receiver_event)
+
+        self.after(2000, self.amend_database)
+
+
 
     def show_frame(self, cont):
 
         frame = self.frames[cont]
         frame.tkraise()
 
+    def amend_database(self):
+        c = self.cursor
+        d = self.sensor_data.get_data()
+        if c.time.year > 2000 and c.time.year < 2100:  # Don't store bad/debug values
+            c.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    (d["timestring"], d["windspeed"], d["temperature"], d["humidity"],
+                    d["pitch"], d["airpressure"], d["dragforce"], d["liftforce"]))
+            self.database.commit()
+        self.after(1000, self.amend_database)
+
+
+    def __del__(self):
+        print(__name__, "close")
+        self.comm.close()
 
 
  ###################################  Start page #####################################################   
@@ -118,7 +136,7 @@ class StartPage(tk.Frame):
         Measurments = tk.Button(self, text="Measurements",height = 2, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         Measurments.grid(row = 0 , column = 1)   
         
-        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageSmoke), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         probe.grid(row = 0, column = 2)
         
         export = tk.Button(self, text="Export data",height = 2, width = 13,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
@@ -137,7 +155,7 @@ class StartPage(tk.Frame):
         labelsp4 = tk.Label(self, text="Project members: ", bg='red', fg='white', font=('helvetica', 30, 'bold'))
         labelsp4.grid(row = 2 , column = 0, columnspan = 4)   
    
-        Kristian = tk.Label(self, text="Kristian Auestasd", font=('helvetica', 30, 'bold'))
+        Kristian = tk.Label(self, text="Kristian Auestad", font=('helvetica', 30, 'bold'))
         Kristian.grid(row = 3 , column = 0, columnspan = 4)
     
         steffen = tk.Label(self, text="Steffen Barskrind",  font=('helvetica', 30, 'bold'))
@@ -202,7 +220,7 @@ class PageOne(tk.Frame):
         Measurments = tk.Button(self, text="Measurements",height = 2, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         Measurments.grid(row = 0 , column = 1)   
         
-        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageSmoke), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         probe.grid(row = 0, column = 2)
         
         export = tk.Button(self, text="Export data",height = 2, width = 13,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
@@ -277,8 +295,44 @@ class PageTwo(tk.Frame):
             test = 3
   
         
-        #menue = tk.Button(self, text="Menu",height = 2, width = 13,command=lambda: controller.show_frame(StartPage), bg='blue', fg='white', font=('helvetica', 30, 'bold')) # 
-        #menue.grid(row = 0 , column = 0)
+        self.windspeed   = tk.IntVar()
+        self.temperature = tk.IntVar()
+        self.humidity    = tk.IntVar()
+        self.pitch       = tk.IntVar()
+        self.airpressure = tk.IntVar()
+        self.dragforce   = tk.IntVar()
+        self.liftforce   = tk.IntVar()
+            
+        def update_display():
+            self.sensor_data = app.sensor_data.get_data()
+            self.windspeed.set(self.sensor_data["windspeed"])
+            self.temperature.set(self.sensor_data["temperature"])
+            self.humidity.set(self.sensor_data["humidity"])
+            self.pitch.set(self.sensor_data["pitch"])
+            self.airpressure.set(self.sensor_data["airpressure"])
+            self.dragforce.set(self.sensor_data["dragforce"])
+            self.liftforce.set(self.sensor_data["liftforce"])
+            #ableAirV.config(text=str(self.ws))
+            
+            self.after(500, update_display)
+            
+
+        
+        def temp2():
+
+            temp2 = float(serialArduino.readline()) 
+            tempvar.set(temp2)
+              
+            
+           
+        def temp_update():
+            temp2()
+            self.after(5000, temp_update)
+        
+     
+        #temp_update()            
+        
+               
         
         
         SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
@@ -309,7 +363,7 @@ class PageTwo(tk.Frame):
 
         AirVelocity = tk.Button(self, text="Air Velocity",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         AirVelocity.grid(row = 4, column = 0)  
-        lableAirV = tk.Label(self, text="5 m/s",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirV = tk.Label(self, text="5 m/s", textvariable = self.windspeed, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableAirV.grid(row = 4, column = 1)  
 
 
@@ -318,7 +372,7 @@ class PageTwo(tk.Frame):
 
         Airtemp = tk.Button(self, text="Air Temprature",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         Airtemp.grid(row = 6, column = 0)  
-        labletemp = tk.Label(self, text =" 25" ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        labletemp = tk.Label(self, textvariable = self.temperature ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         labletemp.grid(row = 6, column = 1)  
 
 
@@ -327,7 +381,7 @@ class PageTwo(tk.Frame):
 
         Airhum = tk.Button(self, text="Air Humidity",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         Airhum.grid(row = 8, column = 0)  
-        lableAirhum = tk.Label(self, text="1500",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirhum = tk.Label(self, text="1500", textvariable=self.humidity, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableAirhum.grid(row = 8, column = 1)  
 
 
@@ -335,24 +389,27 @@ class PageTwo(tk.Frame):
 
         Airpress = tk.Button(self, text="Air pressure",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         Airpress.grid(row = 4, column = 2)  
-        lableAirpress = tk.Label(self, text="15 kg/m3",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirpress = tk.Label(self, text="15 kg/m3", textvariable=self.airpressure, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableAirpress.grid(row = 4, column = 3)  
 
 
 
         forceH = tk.Button(self, text="Force Horizontal",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         forceH.grid(row = 6, column = 2)  
-        lableforceH = tk.Label(self, text="2 N",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableforceH = tk.Label(self, text="2 N", textvariable=self.dragforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableforceH.grid(row = 6, column = 3) 
 
 
         froceV = tk.Button(self, text="Force Vertical",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         froceV.grid(row = 8, column = 2)  
-        lablefroceV = tk.Label(self, text="15 N",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lablefroceV = tk.Label(self, text="15 N", textvariable=self.liftforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lablefroceV.grid(row = 8, column = 3) 
 
         export = tk.Button(self, text="Export",command=exportCSV,height = 2 , width =15, bg='red', fg='black', font=('helvetica', 20, 'bold')) # 
         export.grid(row = 9, column = 2)  
+        
+        self.after(0, update_display)
+
 
  ###################################  PAGE 3 Røykprobe  #####################################################   
 
@@ -385,7 +442,7 @@ class PageThree(tk.Frame):
         spacer3.grid(row = 1 , column = 0)
      
         
-        labeltitle2 = tk.Label(self, text="Set the smoke probe position",   bg='red', fg='white', font=('helvetica', 20, 'bold'))
+        labeltitle2 = tk.Label(self, text="Set the smoke probe posistion",   bg='red', fg='white', font=('helvetica', 20, 'bold'))
         labeltitle2.grid(row = 2 , column =0, columnspan = 5)
         
         spacer3 = tk.Label(self, text="")
@@ -401,12 +458,7 @@ class PageThree(tk.Frame):
 
 
 
-
-
-
-
 class PageFour(tk.Frame):
-
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         
@@ -422,7 +474,6 @@ class PageFour(tk.Frame):
         
         export = tk.Button(self, text="Export data",height = 2, width = 13,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         export.grid(row = 0, column = 3)
-        
         
         
         
@@ -644,10 +695,8 @@ app = SeaofBTCapp()
 #app.resizable(0, 0)
 #app.attributes("-type","splash")
 
-
+# Run the program
 app.mainloop()
 
-
-
-
-
+# Shut down the communicator thread when the GUI closes
+app.comm.close()

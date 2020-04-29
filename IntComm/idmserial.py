@@ -43,9 +43,9 @@ class SerialCommunicator:
         self.receiver = self.SerialReceiver(self.ser, self.data, self.stop_event)
         self.receiver.start()
 
-    def __del__(self):  # Destructor, but doesn't work
-        print(__name__, "Destructor")
-        self.close()
+    #def __del__(self):  # Destructor, but doesn't work
+        #print(__name__, "Destructor")
+        #self.close()
         
     def close(self):
         print(__name__, "Close")
