@@ -26,6 +26,7 @@ import threading
 import sqlite3
 import os
 import csv
+import datetime
     
 LARGE_FONT= ("Verdana", 12)
 
@@ -72,22 +73,30 @@ class SeaofBTCapp(tk.Tk):
         #self.geometry("800x480")
         self.title("IDM")
 
+
+        #  Make a new database file for each month
+        self.db_month = datetime.date.today().isoformat()[:-3]
+        #  Don't store more than 6 months of data. Delete the oldest database file when it turns over.
+        dbs = [f for f in os.listdir(".") if os.path.isfile(f) and f[-3:] == ".db"]
+        if len(dbs) > 5:
+            f = dbs.pop(0)
+            if f != f"data_{self.db_month}.db":
+                os.remove(dbs[0])
         #  Connect to database
-        self.database = sqlite3.connect("data.db")
+        self.database = sqlite3.connect(f"data_{self.db_month}.db")
         self.cursor = self.database.cursor()
         #  Check if data table exists in database and create it if not
-        q = ("table", "data")
-        self.cursor.execute("SELECT count(name) FROM sqlite_master WHERE type=? AND name=?", q)
-        if self.cursor.fetchone()[0] < 1:
-            self.cursor.execute("""CREATE TABLE data
-                        (time date, windspeed int, temperature int, humidity int, pitch int,
-                            airpressure int, dragforce int, liftforce int)""")
-            self.database.commit()
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS data
+                    (time date, windspeed int, temperature int, humidity int, pitch int,
+                        airpressure int, dragforce int, liftforce int)""")
+        self.database.commit()
 
+        #  Initialize communication thread
         self.stop_receiver_event = threading.Event()
         self.sensor_data = dataobject.DataObject()
         self.comm = idmserial.SerialCommunicator(self.sensor_data, self.stop_receiver_event)
 
+        #  Start database write loop
         self.after(2000, self.amend_database)
 
 
@@ -97,7 +106,11 @@ class SeaofBTCapp(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
+
     def amend_database(self):
+        """
+        Copy the sensor data from the data object to the sqlite3 database
+        """
         c = self.cursor
         d = self.sensor_data.get_data()
         if c.time.year > 2000 and c.time.year < 2100:  # Don't store bad/debug values
@@ -106,11 +119,6 @@ class SeaofBTCapp(tk.Tk):
                     d["pitch"], d["airpressure"], d["dragforce"], d["liftforce"]))
             self.database.commit()
         self.after(1000, self.amend_database)
-
-
-    def __del__(self):
-        print(__name__, "close")
-        self.comm.close()
 
 
  ###################################  Start page #####################################################   
@@ -479,6 +487,8 @@ class PageFour(tk.Frame):
         
         
         tkvar = tk.StringVar(self)
+        tkvar2 = tk.StringVar(self)
+        c = app.cursor
         
         # Dictionary with options
         choices = c.execute('SELECT time date FROM data')
@@ -495,10 +505,6 @@ class PageFour(tk.Frame):
             for row in c.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q):
                 print(row)
          
-            
-            
-        tkvar2 = tk.StringVar(self)
-        
         choices2 = c.execute('SELECT time date FROM data')
         tkvar2.set('Select date and time')
         
