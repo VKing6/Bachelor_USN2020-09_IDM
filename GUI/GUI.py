@@ -13,6 +13,7 @@ from PIL import Image
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
+from tkinter import ttk 
 
 import datetime as dt
 import matplotlib.pyplot as plt
@@ -477,29 +478,63 @@ class PageFour(tk.Frame):
         
         
         
-        
         tkvar = tk.StringVar(self)
+        tkvar.set('Select start time') 
         
-        # Dictionary with options
-        choices = c.execute('SELECT time date FROM data')
-        tkvar.set('Select date and time') 
+        
+        tkvar2 = tk.StringVar(self)
+        tkvar2.set('Select end time') 
         
         lablemen= tk.Label(self, text = "Select start time", font=('helvetica', 20, 'bold'))
         lablemen.grid(row = 1 , column = 1)
         
-        popupMenu = tk.OptionMenu(self, tkvar, *choices)
-        popupMenu.config(font=('helvetica', 15, 'bold'))
+        #popupMenu = tk.OptionMenu(self, tkvar, *choices)
+        #popupMenu.config(font=('helvetica', 15, 'bold'))
 
-        popupMenu.grid(row = 2 , column = 1)
+        #popupMenu.grid(row = 2 , column = 1)
+        
+        
+
+        cb = ttk.Combobox(self,textvariable=tkvar)
+        cb.grid(row = 2, column = 1)
+        cblist = list()
+        
+        
+                
+        cb2 = ttk.Combobox(self,textvariable=tkvar2)
+        cb2.grid(row = 2, column = 2)
+        
+        lablemen= tk.Label(self, text = "Select end time", font=('helvetica', 20, 'bold'))
+        lablemen.grid(row = 1 , column = 2)
+        
+        #popupMenu2 = tk.OptionMenu(self, tkvar2, *choices2)
+        #popupMenu2.grid(row = 2 , column = 2)
+       
+   
+        for row in c.execute('SELECT time date FROM data'):
+            
+            cblist.append(row)
+            
+            cb['values'] = cblist
+            
+            cb2['values'] = cblist
 
         
-        def export(*args):
+        def test():
+            
+            print(cb.get())
+      
+
+            
+
+        
+        def export():
 
             #print(tkvar.get()[2:-3], tkvar2.get()[2:-3])
-            q = (tkvar.get()[2:-3], tkvar2.get()[2:-3])
+            q = (cb.get(), cb2.get())
            # for row in c.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q):
                 #print(row)
-            if( tkvar.get()[2:-3]>=tkvar2.get()[2:-3]):
+            if( cb.get()>=cb2.get()):
                 tk.messagebox.showerror("Error", "Start time can not be less or equal to end time")
             else:
                 export_file_path = filedialog.asksaveasfilename(defaultextension='.csv')
@@ -512,20 +547,6 @@ class PageFour(tk.Frame):
                     csv_writer = csv.writer(csv_file)
                     csv_writer.writerow([i[0] for i in cursor.description])
                     csv_writer.writerows(cursor)
-         
-            
-            
-        tkvar2 = tk.StringVar(self)
-        
-        choices2 = c.execute('SELECT time date FROM data')
-        tkvar2.set('Select date and time')
-        
-        lablemen= tk.Label(self, text = "Select end time", font=('helvetica', 20, 'bold'))
-        lablemen.grid(row = 1 , column = 2)
-        
-        popupMenu2 = tk.OptionMenu(self, tkvar2, *choices2)
-        popupMenu2.grid(row = 2 , column = 2)
-
 
         export2 = tk.Button(self, text="Export ",height = 2, width = 13,command=export, bg='red', fg='white', font=('helvetica', 30, 'bold')) # 
         export2.grid(row = 2, column = 0)
