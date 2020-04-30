@@ -495,13 +495,15 @@ class PageFour(tk.Frame):
         
         
 
-        cb = ttk.Combobox(self,textvariable=tkvar)
+        cb = ttk.Combobox(self)
+        cb.set("Start time")
         cb.grid(row = 2, column = 1)
         cblist = list()
         
         
                 
-        cb2 = ttk.Combobox(self,textvariable=tkvar2)
+        cb2 = ttk.Combobox(self)
+        cb2.set("End time")
         cb2.grid(row = 2, column = 2)
         
         lablemen= tk.Label(self, text = "Select end time", font=('helvetica', 20, 'bold'))
