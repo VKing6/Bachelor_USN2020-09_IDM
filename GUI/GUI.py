@@ -6,7 +6,7 @@ from pandas import DataFrame
 #from math import * 
 #import matplotlib.pyplot as plt
 import serial
-#import numpy as np
+import numpy as np
 #import math
 #from colorama import Fore, Back, Style 
 from PIL import Image
@@ -14,24 +14,46 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
 from tkinter import ttk 
-
 import datetime as dt
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-import sys
-sys.path.insert(0, "/home/pi/Projects/IDM/IntComm")
-import dataobject
-import idmserial
-import threading
 #from PIL import Image,ImageTk
 import sqlite3
 import os
 import csv
+from dateutil import parser
+from matplotlib import style
+import datetime
+
     
 LARGE_FONT= ("Verdana", 12)
 
 ######################################## initialization  ##################################
     
+
+
+conn = sqlite3.connect('example.db')
+c = conn.cursor()
+
+# c.execute("""CREATE TABLE data
+#                     (time date, windspeed int, temperature int, humidity int, pitch int,
+#                      airpressure int, dragforce int, liftforce int)""") 
+
+data = [('2020-04-24T11:16:33', 364, 133, 342, 10, 1015, 10, 31),
+        ('2020-04-24T11:16:34', 2, 2113, 14, 10, 1015, 10, 31),
+        ('2020-04-24T11:16:35', 36, 155, 56, 10, 1015, 10, 31),
+        ('2020-04-24T11:16:36', 14, 144, 2, 10, 1015, 10, 31),
+        ('2020-04-24T11:16:37', 364, 133, 342, 10, 1015, 10, 31),
+        ('2020-04-24T11:16:38', 2, 2113, 14, 10, 1015, 10, 31),
+        ('2020-04-24T11:16:39', 36, 155, 56, 10, 1015, 10, 31),
+        ('2020-04-24T11:17:10', 14, 144, 2, 10, 1015, 10, 31),
+        ('2020-04-24T11:17:20', 15, 144, 2, 10, 1015, 10, 31),
+        ('2020-04-24T11:17:22', 5, 144, 2, 10, 1015, 10, 31),
+        ('2020-04-24T11:17:33', 1, 144, 2, 10, 1015, 10, 31),
+        ('2020-04-24T11:17:40', -5, 144, 2, 10, 1015, 10, 31)]
+
+
+c.executemany("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)", data)
 
 
 
@@ -69,28 +91,9 @@ class SeaofBTCapp(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame(StartPage) # viser første side
-        #self.geometry("1300x500")
         #self.geometry("800x480")
+        self.geometry("800x480")
         self.title("IDM")
-
-        #  Connect to database
-        self.database = sqlite3.connect("data.db")
-        self.cursor = self.database.cursor()
-        #  Check if data table exists in database and create it if not
-        q = ("table", "data")
-        self.cursor.execute("SELECT count(name) FROM sqlite_master WHERE type=? AND name=?", q)
-        if self.cursor.fetchone()[0] < 1:
-            self.cursor.execute("""CREATE TABLE data
-                        (time date, windspeed int, temperature int, humidity int, pitch int,
-                            airpressure int, dragforce int, liftforce int)""")
-            self.database.commit()
-
-        self.stop_receiver_event = threading.Event()
-        self.sensor_data = dataobject.DataObject()
-        self.comm = idmserial.SerialCommunicator(self.sensor_data, self.stop_receiver_event)
-
-        self.after(2000, self.amend_database)
-
 
 
     def show_frame(self, cont):
@@ -98,23 +101,9 @@ class SeaofBTCapp(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-    def amend_database(self):
-        c = self.cursor
-        d = self.sensor_data.get_data()
-        if c.time.year > 2000 and c.time.year < 2100:  # Don't store bad/debug values
-            c.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                    (d["timestring"], d["windspeed"], d["temperature"], d["humidity"],
-                    d["pitch"], d["airpressure"], d["dragforce"], d["liftforce"]))
-            self.database.commit()
-        self.after(1000, self.amend_database)
 
 
-    def __del__(self):
-        print(__name__, "close")
-        self.comm.close()
-
-
- ###################################  Start page #####################################################   
+ ##############################  Start page #####################################################   
 
 
         
@@ -137,7 +126,7 @@ class StartPage(tk.Frame):
         Measurments = tk.Button(self, text="Measurements",height = 2, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         Measurments.grid(row = 0 , column = 1)   
         
-        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageSmoke), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         probe.grid(row = 0, column = 2)
         
         export = tk.Button(self, text="Export data",height = 2, width = 13,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
@@ -156,7 +145,7 @@ class StartPage(tk.Frame):
         labelsp4 = tk.Label(self, text="Project members: ", bg='red', fg='white', font=('helvetica', 30, 'bold'))
         labelsp4.grid(row = 2 , column = 0, columnspan = 4)   
    
-        Kristian = tk.Label(self, text="Kristian Auestad", font=('helvetica', 30, 'bold'))
+        Kristian = tk.Label(self, text="Kristian Auestasd", font=('helvetica', 30, 'bold'))
         Kristian.grid(row = 3 , column = 0, columnspan = 4)
     
         steffen = tk.Label(self, text="Steffen Barskrind",  font=('helvetica', 30, 'bold'))
@@ -221,7 +210,7 @@ class PageOne(tk.Frame):
         Measurments = tk.Button(self, text="Measurements",height = 2, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         Measurments.grid(row = 0 , column = 1)   
         
-        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageSmoke), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         probe.grid(row = 0, column = 2)
         
         export = tk.Button(self, text="Export data",height = 2, width = 13,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
@@ -292,49 +281,38 @@ class PageTwo(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         
-        def empty():
-            test = 3
-  
-        
-        self.windspeed   = tk.IntVar()
-        self.temperature = tk.IntVar()
-        self.humidity    = tk.IntVar()
-        self.pitch       = tk.IntVar()
-        self.airpressure = tk.IntVar()
-        self.dragforce   = tk.IntVar()
-        self.liftforce   = tk.IntVar()
-            
-        def update_display():
-            self.sensor_data = app.sensor_data.get_data()
-            self.windspeed.set(self.sensor_data["windspeed"])
-            self.temperature.set(self.sensor_data["temperature"])
-            self.humidity.set(self.sensor_data["humidity"])
-            self.pitch.set(self.sensor_data["pitch"])
-            self.airpressure.set(self.sensor_data["airpressure"])
-            self.dragforce.set(self.sensor_data["dragforce"])
-            self.liftforce.set(self.sensor_data["liftforce"])
-            #ableAirV.config(text=str(self.ws))
-            
-            self.after(500, update_display)
-            
 
         
-        def temp2():
+        def windspeed():
+            sec= int(Second_entry.get())
 
-            temp2 = float(serialArduino.readline()) 
-            tempvar.set(temp2)
-              
+            pltGraph("SELECT windspeed FROM data WHERE time BETWEEN ? AND ?","Windspeed",sec)
+
+        def temperature():
+            sec= int(Second_entry.get())
             
+            pltGraph("SELECT temperature FROM data WHERE time BETWEEN ? AND ?","Temperature",sec)        
+
+        
+        def humidity():
+            sec= int(Second_entry.get())
            
-        def temp_update():
-            temp2()
-            self.after(5000, temp_update)
-        
-     
-        #temp_update()            
-        
-               
-        
+            pltGraph("SELECT humidity FROM data WHERE time BETWEEN ? AND ?","Humidity",sec)
+
+        def airpressure():
+            sec= int(Second_entry.get())
+            
+            pltGraph("SELECT airpressure FROM data WHERE time BETWEEN ? AND ?","Airpressure",sec)        
+
+        def dragforce():
+            sec= int(Second_entry.get())
+           
+            pltGraph("SELECT dragforce FROM data WHERE time BETWEEN ? AND ?","Dragforce",sec)
+
+        def liftforce():
+            sec= int(Second_entry.get())
+            
+            pltGraph("SELECT liftforce FROM data WHERE time BETWEEN ? AND ?","Liftforce",sec)        
         
         SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 0)
@@ -362,55 +340,62 @@ class PageTwo(tk.Frame):
 
 
 
-        AirVelocity = tk.Button(self, text="Air Velocity",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        AirVelocity = tk.Button(self, text="Air Velocity",command=windspeed,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         AirVelocity.grid(row = 4, column = 0)  
-        lableAirV = tk.Label(self, text="5 m/s", textvariable = self.windspeed, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirV = tk.Label(self, text="5 m/s",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableAirV.grid(row = 4, column = 1)  
 
 
         spacer4 = tk.Label(self, text="")
         spacer4.grid(row = 5 , column = 0)
 
-        Airtemp = tk.Button(self, text="Air Temprature",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        Airtemp = tk.Button(self, text="Air Temprature",command=temperature,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         Airtemp.grid(row = 6, column = 0)  
-        labletemp = tk.Label(self, textvariable = self.temperature ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        labletemp = tk.Label(self, text =" 25" ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         labletemp.grid(row = 6, column = 1)  
 
 
         spacer5 = tk.Label(self, text="")
         spacer5.grid(row = 7 , column = 0)
 
-        Airhum = tk.Button(self, text="Air Humidity",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        Airhum = tk.Button(self, text="Air Humidity",command=humidity,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         Airhum.grid(row = 8, column = 0)  
-        lableAirhum = tk.Label(self, text="1500", textvariable=self.humidity, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirhum = tk.Label(self, text="1500",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableAirhum.grid(row = 8, column = 1)  
 
 
 
 
-        Airpress = tk.Button(self, text="Air pressure",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        Airpress = tk.Button(self, text="Air pressure",command=airpressure,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         Airpress.grid(row = 4, column = 2)  
-        lableAirpress = tk.Label(self, text="15 kg/m3", textvariable=self.airpressure, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirpress = tk.Label(self, text="15 kg/m3",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableAirpress.grid(row = 4, column = 3)  
 
 
 
-        forceH = tk.Button(self, text="Force Horizontal",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        forceH = tk.Button(self, text="Drag force",command=dragforce,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         forceH.grid(row = 6, column = 2)  
-        lableforceH = tk.Label(self, text="2 N", textvariable=self.dragforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableforceH = tk.Label(self, text="2 N",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lableforceH.grid(row = 6, column = 3) 
 
 
-        froceV = tk.Button(self, text="Force Vertical",command=empty,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        froceV = tk.Button(self, text="Lift force",command=liftforce,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
         froceV.grid(row = 8, column = 2)  
-        lablefroceV = tk.Label(self, text="15 N", textvariable=self.liftforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lablefroceV = tk.Label(self, text="15 N",height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
         lablefroceV.grid(row = 8, column = 3) 
-
-        export = tk.Button(self, text="Export",command=exportCSV,height = 2 , width =15, bg='red', fg='black', font=('helvetica', 20, 'bold')) # 
-        export.grid(row = 9, column = 2)  
         
-        self.after(0, update_display)
 
+        Second_entry = tk.Entry(self)
+        Second_entry.grid(row=9, column=1, columnspan = 1)
+        Second_entry.insert(0,60)       
+                
+        lablesec = tk.Label(self, text = "Optinal: Enter seconds to plt in graph")
+        lablesec.grid(row=9, column=0 )
+            
+                        
+        
+
+  
 
  ###################################  PAGE 3 Røykprobe  #####################################################   
 
@@ -443,7 +428,7 @@ class PageThree(tk.Frame):
         spacer3.grid(row = 1 , column = 0)
      
         
-        labeltitle2 = tk.Label(self, text="Set the smoke probe posistion",   bg='red', fg='white', font=('helvetica', 20, 'bold'))
+        labeltitle2 = tk.Label(self, text="Set the smoke probe position",   bg='red', fg='white', font=('helvetica', 20, 'bold'))
         labeltitle2.grid(row = 2 , column =0, columnspan = 5)
         
         spacer3 = tk.Label(self, text="")
@@ -458,8 +443,8 @@ class PageThree(tk.Frame):
 
 
 
-
 class PageFour(tk.Frame):
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         
@@ -478,12 +463,14 @@ class PageFour(tk.Frame):
         
         
         
+        
+        
         tkvar = tk.StringVar(self)
         tkvar.set('Select start time') 
         
         
         tkvar2 = tk.StringVar(self)
-        tkvar2.set('Select end time') 
+        tkvar2.set('Select ') 
         
         lablemen= tk.Label(self, text = "Select start time", font=('helvetica', 20, 'bold'))
         lablemen.grid(row = 1 , column = 1)
@@ -521,15 +508,7 @@ class PageFour(tk.Frame):
             
             cb2['values'] = cblist
 
-        
-        def test():
-            
-            print(cb.get())
-      
-
-            
-
-        
+ 
         def export():
 
             #print(tkvar.get()[2:-3], tkvar2.get()[2:-3])
@@ -549,51 +528,29 @@ class PageFour(tk.Frame):
                     csv_writer = csv.writer(csv_file)
                     csv_writer.writerow([i[0] for i in cursor.description])
                     csv_writer.writerows(cursor)
+         
+            
+            
+
+
+        
+        
+        
+
+            
+  
+
+    
 
         export2 = tk.Button(self, text="Export ",height = 2, width = 13,command=export, bg='red', fg='white', font=('helvetica', 30, 'bold')) # 
         export2.grid(row = 2, column = 0)
         
-        
-        grf = tk.Button(self, text="graf ",height = 2, width = 13,command=export, bg='red', fg='white', font=('helvetica', 30, 'bold')) # 
-        grf.grid(row = 3, column = 0)
 
 ###### GLOBAL FUNCTIONS ######################################################################
-""" 
-def grphtest():
-    
-        
-    
-    fig = plt.figure(figsize=(5, 4), dpi=200)
-    ax = fig.add_subplot(1, 1, 1)
-    xs = []
-    ys = []
-    
-    def animate(i, xs, ys):
-        
-    
-        temp = float(serialArduino.readline())  #hva som skal plottes i y axe
-        print(temp)
-    
-        xs.append(dt.datetime.now().strftime('%H:%M:%S')) # sender inn hva som plottes  i X axe med tid
-        ys.append(temp)                                   # sender inn hva som plottes  i Y axe   med temp            
-    
-        ax.clear()
-        ax.plot(xs, ys)
-    
-        plt.xticks(rotation=45, ha='right')
-        plt.subplots_adjust(bottom=0.30)
-        plt.title('Time')
-        plt.ylabel('Degree C')
-    
 
 
-    ani= animation.FuncAnimation(fig, animate, fargs=(xs, ys), interval=5000)
-    plt.show(ani)"""
-
-
- ################################################################################################       
     
-def create_window_graph(windspeed,drag,windforce,reqpower):
+def create_window_graph(xas,yas,labname):
    
     window = tk.Toplevel()
     
@@ -605,7 +562,7 @@ def create_window_graph(windspeed,drag,windforce,reqpower):
     
     fig = Figure(figsize=(5, 4), dpi=150)
     
-    fig.add_subplot(111).plot(windspeed,drag, 'r--', label = "Drag") #plotter y og x axes NB DE MÅ VÆRE LIKE LANGE OM DU VIL HA EN NY LINJE COPY PAST DENNE
+    fig.add_subplot(111).plot(xas,yas, 'r--', label = labname) #plotter y og x axes NB DE MÅ VÆRE LIKE LANGE OM DU VIL HA EN NY LINJE COPY PAST DENNE
     
 
     
@@ -635,7 +592,7 @@ def create_window_graph(windspeed,drag,windforce,reqpower):
         #window.quit()     
         window.destroy() 
                        
-    lable32 = tk.Label(master = window, text = "Windspeed")
+    lable32 = tk.Label(master = window, text = "Time")
     lable32.pack()
     
     sap = tk.Label(master = window, text = "")
@@ -647,6 +604,71 @@ def create_window_graph(windspeed,drag,windforce,reqpower):
     
     
  ################################################################################################       
+
+
+def pltGraph(valdata,labname,secval):
+    
+    c.execute("SELECT time FROM data ORDER BY time DESC LIMIT 1")
+    now_time_string = c.fetchone()[0]
+    now_time = datetime.datetime.fromisoformat(now_time_string)
+    
+    then_time = now_time - datetime.timedelta(seconds=secval)
+    then_time_string = then_time.isoformat()
+    
+    
+    
+    b = (then_time_string, now_time_string)
+    
+   # test = list()
+    Yaxes = list()
+    Xaxes = list()
+    
+    #for row in c.execute('SELECT temperature FROM data'):
+        #test.append(row)
+   
+     #for row in c.execute("SELECT windspeed FROM data WHERE time BETWEEN ? AND ?", b):
+        #Yaxes.append(row) 
+        
+    for row in c.execute(valdata, b):
+        Yaxes.append(row)    
+        
+
+    
+    for row in c.execute("SELECT time FROM data WHERE time BETWEEN ? AND ?", b):
+        Xaxes.append(row[0][-8:]) 
+    
+    #test3 = np.array(test)
+    pltYaxes = np.array(Yaxes)
+    pltXaxes = np.array(Xaxes)
+
+    
+    create_window_graph(pltXaxes, pltYaxes,labname)
+  
+   # print(pltYaxes)
+
+    #c.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", b)
+    #print(c.fetchall())
+    
+    #print(then_time_string)
+    
+    #print(now_time_string)
+            
+
+
+
+
+
+
+
+################################################################################################
+
+
+
+
+
+
+
+
 
 
    
@@ -681,20 +703,7 @@ def create_window_picture(pic):
 
 ################################################################################################
         
-def exportCSV ():
-  
-    export_file_path = filedialog.asksaveasfilename(defaultextension='.csv')
 
-    print ("Exporting data into CSV............")
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM data  ")
-    
-    with open(export_file_path, "w") as csv_file:
-        csv_writer = csv.writer(csv_file)
-        csv_writer.writerow([i[0] for i in cursor.description])
-        csv_writer.writerows(cursor)
-    #dirpath = os.getcwd() + export_file_path
-    
    
     
 
@@ -744,8 +753,10 @@ app = SeaofBTCapp()
 #app.resizable(0, 0)
 #app.attributes("-type","splash")
 
-# Run the program
+
 app.mainloop()
 
-# Shut down the communicator thread when the GUI closes
-app.comm.close()
+
+
+
+
