@@ -2,27 +2,20 @@
 import tkinter as tk
 from tkinter import filedialog
 from pandas import DataFrame
-#from tkinter import Tk, Canvas, Frame, BOTH
-#from math import * 
-#import matplotlib.pyplot as plt
 import serial
 import numpy as np
-#import math
-#from colorama import Fore, Back, Style 
 from PIL import Image
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
-from tkinter import ttk 
-import datetime as dt
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-#from PIL import Image,ImageTk
+from matplotlib import style
+from tkinter import ttk
 import sqlite3
 import os
 import csv
 from dateutil import parser
-from matplotlib import style
 import datetime
 
     
@@ -30,34 +23,6 @@ LARGE_FONT= ("Verdana", 12)
 
 ######################################## initialization  ##################################
     
-
-
-conn = sqlite3.connect('example.db')
-c = conn.cursor()
-
-# c.execute("""CREATE TABLE data
-#                     (time date, windspeed int, temperature int, humidity int, pitch int,
-#                      airpressure int, dragforce int, liftforce int)""") 
-
-data = [('2020-04-24T11:16:33', 364, 133, 342, 10, 1015, 10, 31),
-        ('2020-04-24T11:16:34', 2, 2113, 14, 10, 1015, 10, 31),
-        ('2020-04-24T11:16:35', 36, 155, 56, 10, 1015, 10, 31),
-        ('2020-04-24T11:16:36', 14, 144, 2, 10, 1015, 10, 31),
-        ('2020-04-24T11:16:37', 364, 133, 342, 10, 1015, 10, 31),
-        ('2020-04-24T11:16:38', 2, 2113, 14, 10, 1015, 10, 31),
-        ('2020-04-24T11:16:39', 36, 155, 56, 10, 1015, 10, 31),
-        ('2020-04-24T11:17:10', 14, 144, 2, 10, 1015, 10, 31),
-        ('2020-04-24T11:17:20', 15, 144, 2, 10, 1015, 10, 31),
-        ('2020-04-24T11:17:22', 5, 144, 2, 10, 1015, 10, 31),
-        ('2020-04-24T11:17:33', 1, 144, 2, 10, 1015, 10, 31),
-        ('2020-04-24T11:17:40', -5, 144, 2, 10, 1015, 10, 31)]
-
-
-c.executemany("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)", data)
-
-
-
-
 
 ########################### PAGE FUNCTION #######################################+
 
@@ -281,37 +246,29 @@ class PageTwo(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         
-
         
         def windspeed():
             sec= int(Second_entry.get())
-
             pltGraph("SELECT windspeed FROM data WHERE time BETWEEN ? AND ?","Windspeed",sec)
 
         def temperature():
             sec= int(Second_entry.get())
-            
             pltGraph("SELECT temperature FROM data WHERE time BETWEEN ? AND ?","Temperature",sec)        
-
         
         def humidity():
             sec= int(Second_entry.get())
-           
             pltGraph("SELECT humidity FROM data WHERE time BETWEEN ? AND ?","Humidity",sec)
 
         def airpressure():
             sec= int(Second_entry.get())
-            
             pltGraph("SELECT airpressure FROM data WHERE time BETWEEN ? AND ?","Airpressure",sec)        
 
         def dragforce():
             sec= int(Second_entry.get())
-           
             pltGraph("SELECT dragforce FROM data WHERE time BETWEEN ? AND ?","Dragforce",sec)
 
         def liftforce():
             sec= int(Second_entry.get())
-            
             pltGraph("SELECT liftforce FROM data WHERE time BETWEEN ? AND ?","Liftforce",sec)        
         
         SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
@@ -440,9 +397,6 @@ class PageThree(tk.Frame):
         bar.grid(row = 5 , column = 0, columnspan =4)  
   
 
-
-
-
 class PageFour(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -460,9 +414,6 @@ class PageFour(tk.Frame):
         
         export = tk.Button(self, text="Export data",height = 2, width = 13,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         export.grid(row = 0, column = 3)
-        
-        
-        
         
         
         tkvar = tk.StringVar(self)
@@ -501,21 +452,16 @@ class PageFour(tk.Frame):
        
    
         for row in c.execute('SELECT time date FROM data'):
-            
             cblist.append(row)
-            
             cb['values'] = cblist
-            
             cb2['values'] = cblist
 
- 
-        def export():
-
+        def export_to_csv():
             #print(tkvar.get()[2:-3], tkvar2.get()[2:-3])
             q = (cb.get(), cb2.get())
-           # for row in c.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q):
+            # for row in c.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q):
                 #print(row)
-            if( cb.get()>=cb2.get()):
+            if (cb.get()>=cb2.get()):
                 tk.messagebox.showerror("Error", "Start time can not be less or equal to end time")
             else:
                 export_file_path = filedialog.asksaveasfilename(defaultextension='.csv')
@@ -528,21 +474,8 @@ class PageFour(tk.Frame):
                     csv_writer = csv.writer(csv_file)
                     csv_writer.writerow([i[0] for i in cursor.description])
                     csv_writer.writerows(cursor)
-         
-            
-            
 
-
-        
-        
-        
-
-            
-  
-
-    
-
-        export2 = tk.Button(self, text="Export ",height = 2, width = 13,command=export, bg='red', fg='white', font=('helvetica', 30, 'bold')) # 
+        export2 = tk.Button(self, text="Export ",height = 2, width = 13,command=export_to_csv, bg='red', fg='white', font=('helvetica', 30, 'bold')) # 
         export2.grid(row = 2, column = 0)
         
 
@@ -559,16 +492,12 @@ def create_window_graph(xas,yas,labname):
     #t1 = np.arange(10, 15, .01) #plotter x axes
 
     
-    
     fig = Figure(figsize=(5, 4), dpi=150)
     
     fig.add_subplot(111).plot(xas,yas, 'r--', label = labname) #plotter y og x axes NB DE MÅ VÆRE LIKE LANGE OM DU VIL HA EN NY LINJE COPY PAST DENNE
     
 
-    
-    
     fig.legend()
-    
     
     
     canvas = FigureCanvasTkAgg(fig, master=window)  
@@ -616,10 +545,9 @@ def pltGraph(valdata,labname,secval):
     then_time_string = then_time.isoformat()
     
     
-    
     b = (then_time_string, now_time_string)
     
-   # test = list()
+    # test = list()
     Yaxes = list()
     Xaxes = list()
     
@@ -632,7 +560,6 @@ def pltGraph(valdata,labname,secval):
     for row in c.execute(valdata, b):
         Yaxes.append(row)    
         
-
     
     for row in c.execute("SELECT time FROM data WHERE time BETWEEN ? AND ?", b):
         Xaxes.append(row[0][-8:]) 
@@ -656,18 +583,7 @@ def pltGraph(valdata,labname,secval):
 
 
 
-
-
-
-
 ################################################################################################
-
-
-
-
-
-
-
 
 
 
@@ -680,8 +596,6 @@ def create_window_picture(pic):
     render = ImageTk.PhotoImage(load)
     
    
-    
-    
     img = tk.Label(window, image=render)
     
     img.image = render
@@ -704,46 +618,23 @@ def create_window_picture(pic):
 ################################################################################################
         
 
-   
-    
-
-
-
-    
-    
-################################################################################################
-
-
-
-
-    
-################################################################################################
-
-
 def NewWindow():
    
     window = tk.Toplevel()
 
-
-    
     window.grid_rowconfigure(0, weight=1)
     window.grid_columnconfigure(0, weight=1)
    
 
-    
-
     def _quit():
         #window.quit()     
         window.destroy() 
-                       
-    
+
     
     button = tk.Button(master=window, text="Quit", command=_quit, bg='red', fg='white', font=('helvetica', 10, 'bold'))
     button.grid(row=15, column = 0)   
     
     return window
-
-
 
 
 
@@ -755,8 +646,3 @@ app = SeaofBTCapp()
 
 
 app.mainloop()
-
-
-
-
-
