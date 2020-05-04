@@ -338,6 +338,7 @@ class PageTwo(tk.Frame):
             sec= int(Second_entry.get())
             pltGraph("SELECT liftforce FROM data WHERE time BETWEEN ? AND ?","Liftforce",sec)        
         
+        
         SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 0)
         
@@ -603,7 +604,7 @@ def create_window_graph(xas,yas,labname):
 
 
 def pltGraph(valdata,labname,secval):
-    
+    c = app.cursor
     c.execute("SELECT time FROM data ORDER BY time DESC LIMIT 1")
     now_time_string = c.fetchone()[0]
     now_time = datetime.datetime.fromisoformat(now_time_string)
