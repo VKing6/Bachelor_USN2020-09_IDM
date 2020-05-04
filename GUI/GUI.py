@@ -28,6 +28,7 @@ LARGE_FONT= ("Verdana", 12)
 
 db_cursor = "" 
 
+
 ########################### PAGE FUNCTION #######################################+
 
 class IDM_app(tk.Tk):
@@ -44,7 +45,6 @@ class IDM_app(tk.Tk):
         container.grid_rowconfigure(0, weight=1) #gjør at alt expander av seg selv med pack
         container.grid_columnconfigure(0, weight=1)
         
-
         self.frames = {}
 
         for F in (StartPage, PageOne, PageTwo, PageThree,PageFour): #antall sider som skal lages i programmet
@@ -89,7 +89,6 @@ class IDM_app(tk.Tk):
 
         #  Start database write loop
         self.after(2000, self.amend_database)
-
 
 
     def show_frame(self, cont):
@@ -300,7 +299,7 @@ class PageTwo(tk.Frame):
         self.liftforce   = tk.IntVar()
             
         def update_display():
-            self.sensor_data = app.sensor_data.get_data()
+            self.sensor_data = controller.sensor_data.get_data()
             self.windspeed.set(self.sensor_data["windspeed"])
             self.temperature.set(self.sensor_data["temperature"])
             self.humidity.set(self.sensor_data["humidity"])
@@ -486,7 +485,6 @@ class PageFour(tk.Frame):
         
         tkvar = tk.StringVar(self)
         tkvar.set('Select start time') 
-        c = app.cursor
         
         
         tkvar2 = tk.StringVar(self)
@@ -519,6 +517,7 @@ class PageFour(tk.Frame):
        
         def update_times_list():
             cblist = list()
+            c = controller.cursor
             for row in c.execute('SELECT time date FROM data'):
                 cblist.append(row)
                 cb['values'] = cblist
@@ -536,7 +535,7 @@ class PageFour(tk.Frame):
                 export_file_path = filedialog.asksaveasfilename(defaultextension='.csv')
             
                 print ("Exporting data into CSV............")
-                cursor = app.cursor
+                cursor = controller.cursor
                 cursor.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q)
                 
                 with open(export_file_path, "w") as csv_file:
