@@ -2,6 +2,7 @@
 
 #include <ThreeWire.h>
 #include <RtcDS1302.h>
+#include <dht.h>
 
 #include "boolToByte.h"
 
@@ -22,17 +23,22 @@ struct InputData {
     bool runFan;
 };
 
-// ++ Faux sensors
+dht DHT;
+
+// ++ Sensors
 const int startStopPin = 52;
 const int hatchSafetyPin = 51;
 const int potPin = A7;
-// -- Faux sensors
+const int dht11pin = 3;
+// -- Sensors
 
 // Timing variables
 unsigned long previousTransmitTime = 0;
 const unsigned int transmitInterval = 1000;
 unsigned long previousPollTime = 0;
 const unsigned int pollInterval = 200;
+unsigned long previousDHT11pollTime = 0;
+const unsigned int DHT11pollInterval = 2000;
 unsigned long previousPIDtime = 0;
 const unsigned int PIDinterval = 200;
 
@@ -99,8 +105,8 @@ void setup() {
     pinMode(startStopPin, INPUT_PULLUP);
     pinMode(hatchSafetyPin, INPUT_PULLUP);
 
-    sensorData.temperature = -2;
-    sensorData.humidity = -3;
+    //sensorData.temperature = -2;
+    //sensorData.humidity = -3;
     sensorData.pitch = -4;
     sensorData.airPressure = -5;
     sensorData.dragForce = -6;
@@ -120,6 +126,13 @@ void loop() {
       sensorData.hatchClosed = (digitalRead(startStopPin)) ? false : true;
       sensorData.fanRunning = (digitalRead(hatchSafetyPin)) ? false : true;
       // -- Faux sensors
+    }
+
+    if (currentTime - previousDHT11pollTime >= DHT11pollInterval) {
+      previousDHT11pollTime = currentTime;
+      DHT.read11(dht11pin);
+      sensorData.temperature = DHT.temperature;
+      sensorData.humidity = DHT.humidity;
     }
     
     // Transmit every transmitInterval
