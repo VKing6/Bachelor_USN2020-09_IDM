@@ -17,12 +17,16 @@ import os
 import csv
 from dateutil import parser
 import datetime
+import threading
+import dataobject
+import idmserial
 
     
 LARGE_FONT= ("Verdana", 12)
 
 ######################################## initialization  ##################################
-    
+
+db_cursor = "" 
 
 ########################### PAGE FUNCTION #######################################+
 
@@ -100,7 +104,7 @@ class SeaofBTCapp(tk.Tk):
         """
         c = self.cursor
         d = self.sensor_data.get_data()
-        if c.time.year > 2000 and c.time.year < 2100:  # Don't store bad/debug values
+        if d["time"].year > 2000 and d["time"].year < 2100:  # Don't store bad/debug values
             c.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                     (d["timestring"], d["windspeed"], d["temperature"], d["humidity"],
                     d["pitch"], d["airpressure"], d["dragforce"], d["liftforce"]))
@@ -308,6 +312,7 @@ class PageTwo(tk.Frame):
             
             self.after(500, update_display)
                
+        self.after(0, update_display)
         
         def windspeed():
             sec= int(Second_entry.get())
