@@ -30,7 +30,7 @@ db_cursor = ""
 
 ########################### PAGE FUNCTION #######################################+
 
-class SeaofBTCapp(tk.Tk):
+class IDM_app(tk.Tk):
 
     def __init__(self, *args, **kwargs): 
         
@@ -706,7 +706,7 @@ def NewWindow():
 
 
 
-app = SeaofBTCapp()
+app = IDM_app()
 
 #app.resizable(0, 0)
 #app.attributes("-type","splash")
