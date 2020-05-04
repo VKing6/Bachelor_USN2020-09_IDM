@@ -504,7 +504,6 @@ class PageFour(tk.Frame):
         cb = ttk.Combobox(self)
         cb.set("Start time")
         cb.grid(row = 2, column = 1)
-        cblist = list()
         
         
                 
@@ -518,12 +517,14 @@ class PageFour(tk.Frame):
         #popupMenu2 = tk.OptionMenu(self, tkvar2, *choices2)
         #popupMenu2.grid(row = 2 , column = 2)
        
-   
-        for row in c.execute('SELECT time date FROM data'):
-            cblist.append(row)
-            cb['values'] = cblist
-            cb2['values'] = cblist
-
+        def update_times_list():
+            cblist = list()
+            for row in c.execute('SELECT time date FROM data'):
+                cblist.append(row)
+                cb['values'] = cblist
+                cb2['values'] = cblist
+        update_times_list()
+        
         def export_to_csv():
             #print(tkvar.get()[2:-3], tkvar2.get()[2:-3])
             q = (cb.get(), cb2.get())
@@ -535,7 +536,7 @@ class PageFour(tk.Frame):
                 export_file_path = filedialog.asksaveasfilename(defaultextension='.csv')
             
                 print ("Exporting data into CSV............")
-                cursor = conn.cursor()
+                cursor = app.cursor
                 cursor.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q)
                 
                 with open(export_file_path, "w") as csv_file:
@@ -545,6 +546,9 @@ class PageFour(tk.Frame):
 
         export2 = tk.Button(self, text="Export ",height = 2, width = 13,command=export_to_csv, bg='red', fg='white', font=('helvetica', 30, 'bold')) # 
         export2.grid(row = 2, column = 0)
+        
+        updateliste = tk.Button(self, text="Update list ",height = 2, width = 13,command=update_times_list, bg='red', fg='white', font=('helvetica', 30, 'bold')) # 
+        updateliste.grid(row = 3, column = 0)
         
 
 ###### GLOBAL FUNCTIONS ######################################################################
