@@ -44,25 +44,6 @@ class IDM_app(tk.Tk):
 
         container.grid_rowconfigure(0, weight=1) #gjør at alt expander av seg selv med pack
         container.grid_columnconfigure(0, weight=1)
-        
-        self.frames = {}
-
-        for F in (StartPage, PageOne, PageTwo, PageThree,PageFour): #antall sider som skal lages i programmet
-
-            frame = F(container, self)
-            
-
-            self.frames[F] = frame
-            
-            frame.grid_rowconfigure(0, weight=0) #gjør at alt expander av seg selv grid
-            frame.grid_columnconfigure(0, weight=1)
-            
-            frame.grid(row=0, column=0, sticky="nsew")
-
-        self.show_frame(StartPage) # viser første side
-        #self.geometry("800x480")
-        self.geometry("800x480")
-        self.title("IDM")
 
 
         #  Make a new database file for each month
@@ -89,6 +70,27 @@ class IDM_app(tk.Tk):
 
         #  Start database write loop
         self.after(2000, self.amend_database)
+        
+        
+        
+        self.frames = {}
+
+        for F in (StartPage, PageOne, PageTwo, PageThree,PageFour): #antall sider som skal lages i programmet
+
+            frame = F(container, self)
+            
+
+            self.frames[F] = frame
+            
+            frame.grid_rowconfigure(0, weight=0) #gjør at alt expander av seg selv grid
+            frame.grid_columnconfigure(0, weight=1)
+            
+            frame.grid(row=0, column=0, sticky="nsew")
+
+        self.show_frame(StartPage) # viser første side
+        #self.geometry("800x480")
+        self.geometry("800x480")
+        self.title("IDM")
 
 
     def show_frame(self, cont):
