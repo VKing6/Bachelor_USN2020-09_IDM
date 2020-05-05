@@ -87,8 +87,6 @@ class IDM_app(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame(StartPage) # viser første side
-        #self.geometry("800x480")
-        self.geometry("800x480")
         self.title("IDM")
 
 
@@ -712,8 +710,11 @@ def NewWindow():
 
 app = IDM_app()
 
-#app.resizable(0, 0)
-#app.attributes("-type","splash")
+# Remove header and force window to touchscreen
+app.geometry("800x480+0+0")
+app.update_idletasks()
+app.attributes("-fullscreen", True)
+app.update_idletasks()
 
 # Run the program
 app.mainloop()
