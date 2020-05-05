@@ -35,7 +35,6 @@ class IDM_app(tk.Tk):
 
     def __init__(self, *args, **kwargs): 
         
-        
         tk.Tk.__init__(self, *args, **kwargs)
         
         container = tk.Frame(self)
@@ -111,6 +110,7 @@ class IDM_app(tk.Tk):
                     d["pitch"], d["airpressure"], d["dragforce"], d["liftforce"]))
             self.database.commit()
         self.after(1000, self.amend_database)
+        
 
 
  ##############################  Start page #####################################################   
@@ -121,8 +121,6 @@ class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
-        
-        
 
        # labelmenu = tk.Label(self, text="Menu",height = 2, width = 16,  bg='blue', fg='white', font=('helvetica', 30, 'bold'))
         #labelmenu.grid(row = 0 , column = 0)
@@ -130,21 +128,21 @@ class StartPage(tk.Frame):
         #menue = tk.Button(self, text="Menu",height = 2, width = 13,command=lambda: controller.show_frame(StartPage), bg='blue', fg='white', font=('helvetica', 30, 'bold')) # 
        # menue.grid(row = 0 , column = 0)
         
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 0)
         
-        Measurments = tk.Button(self, text="Measurements",height = 2, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        Measurments = tk.Button(self, text="Measurements",height = 3, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         Measurments.grid(row = 0 , column = 1)   
         
-        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         probe.grid(row = 0, column = 2)
         
-        export = tk.Button(self, text="Export data",height = 2, width = 13,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        export = tk.Button(self, text="Export data",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         export.grid(row = 0, column = 3)
         
         
-        labelsp3 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
-        labelsp3.grid(row = 1 , column = 1) 
+        labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
+        labelsp33.grid(row = 1 , column = 1) 
         
         
         
@@ -169,12 +167,7 @@ class StartPage(tk.Frame):
  
         
         Håvard = tk.Label(self, text="Håvard Gaska ",  font=('helvetica', 30, 'bold'))
-        Håvard.grid(row = 7, column = 0, columnspan = 4)            
-        
-        
-
-        
-
+        Håvard.grid(row = 7, column = 0, columnspan = 4)
                                 
 
 
@@ -214,22 +207,21 @@ class PageOne(tk.Frame):
        # menue = tk.Button(self, text="Menu",height = 2, width = 13,command=lambda: controller.show_frame(StartPage), bg='blue', fg='white', font=('helvetica', 30, 'bold')) # 
         #menue.grid(row = 0 , column = 0)
         
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 0)
         
-        Measurments = tk.Button(self, text="Measurements",height = 2, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        Measurments = tk.Button(self, text="Measurements",height = 3, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         Measurments.grid(row = 0 , column = 1)   
         
-        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         probe.grid(row = 0, column = 2)
         
-        export = tk.Button(self, text="Export data",height = 2, width = 13,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        export = tk.Button(self, text="Export data",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         export.grid(row = 0, column = 3)
         
         
-
-        spacer3 = tk.Label(self, text="")
-        spacer3.grid(row = 1 , column = 0)
+        labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
+        labelsp33.grid(row = 1 , column = 1) 
      
         
         labeltitle2 = tk.Label(self, text="Adjusting speed and pitch controller",   bg='red', fg='white', font=('helvetica', 20, 'bold'))
@@ -338,24 +330,23 @@ class PageTwo(tk.Frame):
         def liftforce():
             sec= int(Second_entry.get())
             pltGraph("SELECT liftforce FROM data WHERE time BETWEEN ? AND ?","Liftforce",sec)        
+            
         
-        
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 0)
         
-        Measurments = tk.Button(self, text="Measurements",height = 2, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        Measurments = tk.Button(self, text="Measurements",height = 3, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         Measurments.grid(row = 0 , column = 1)   
         
-        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         probe.grid(row = 0, column = 2)
         
-        export = tk.Button(self, text="Export data",height = 2, width = 13,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        export = tk.Button(self, text="Export data",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         export.grid(row = 0, column = 3)
         
         
-
-        spacer3 = tk.Label(self, text="")
-        spacer3.grid(row = 1 , column = 0)
+        labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
+        labelsp33.grid(row = 1 , column = 1) 
      
         
         labeltitle2 = tk.Label(self, text="Measurements from sensors",   bg='red', fg='white', font=('helvetica', 20, 'bold'))
@@ -366,48 +357,48 @@ class PageTwo(tk.Frame):
 
 
 
-        AirVelocity = tk.Button(self, text="Air Velocity",command=windspeed,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        AirVelocity = tk.Button(self, text="Air Velocity",command=windspeed,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) # 
         AirVelocity.grid(row = 4, column = 0)  
-        lableAirV = tk.Label(self, text="5 m/s", textvariable = self.windspeed, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirV = tk.Label(self, text="5 m/s", textvariable = self.windspeed, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) # 
         lableAirV.grid(row = 4, column = 1)  
 
 
         spacer4 = tk.Label(self, text="")
         spacer4.grid(row = 5 , column = 0)
 
-        Airtemp = tk.Button(self, text="Air Temprature",command=temperature,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        Airtemp = tk.Button(self, text="Air Temprature",command=temperature,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) # 
         Airtemp.grid(row = 6, column = 0)  
-        labletemp = tk.Label(self, textvariable = self.temperature ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        labletemp = tk.Label(self, textvariable = self.temperature ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) # 
         labletemp.grid(row = 6, column = 1)  
 
 
         spacer5 = tk.Label(self, text="")
         spacer5.grid(row = 7 , column = 0)
 
-        Airhum = tk.Button(self, text="Air Humidity",command=humidity,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        Airhum = tk.Button(self, text="Air Humidity",command=humidity,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) # 
         Airhum.grid(row = 8, column = 0)  
-        lableAirhum = tk.Label(self, text="1500", textvariable=self.humidity, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirhum = tk.Label(self, text="1500", textvariable=self.humidity, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) # 
         lableAirhum.grid(row = 8, column = 1)  
 
 
 
 
-        Airpress = tk.Button(self, text="Air pressure",command=airpressure,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        Airpress = tk.Button(self, text="Air pressure",command=airpressure,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) # 
         Airpress.grid(row = 4, column = 2)  
-        lableAirpress = tk.Label(self, text="15 kg/m3", textvariable=self.airpressure, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableAirpress = tk.Label(self, text="15 kg/m3", textvariable=self.airpressure, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) # 
         lableAirpress.grid(row = 4, column = 3)  
 
 
 
-        forceH = tk.Button(self, text="Drag force",command=dragforce,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        forceH = tk.Button(self, text="Drag force",command=dragforce,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) # 
         forceH.grid(row = 6, column = 2)  
-        lableforceH = tk.Label(self, text="2 N", textvariable=self.dragforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lableforceH = tk.Label(self, text="2 N", textvariable=self.dragforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) # 
         lableforceH.grid(row = 6, column = 3) 
 
 
-        froceV = tk.Button(self, text="Lift force",command=liftforce,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 20, 'bold')) # 
+        froceV = tk.Button(self, text="Lift force",command=liftforce,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) # 
         froceV.grid(row = 8, column = 2)  
-        lablefroceV = tk.Label(self, text="15 N", textvariable=self.liftforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 20, 'bold')) # 
+        lablefroceV = tk.Label(self, text="15 N", textvariable=self.liftforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) # 
         lablefroceV.grid(row = 8, column = 3) 
         
 
@@ -417,11 +408,7 @@ class PageTwo(tk.Frame):
                 
         lablesec = tk.Label(self, text = "Optinal: Enter seconds to plt in graph")
         lablesec.grid(row=9, column=0 )
-            
-                        
-        
 
-  
 
  ###################################  PAGE 3 Røykprobe  #####################################################   
 
@@ -436,22 +423,21 @@ class PageThree(tk.Frame):
        # menue.grid(row = 0 , column = 0)
         
         
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 0)
         
-        Measurments = tk.Button(self, text="Measurements",height = 2, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        Measurments = tk.Button(self, text="Measurements",height = 3, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         Measurments.grid(row = 0 , column = 1)   
         
-        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         probe.grid(row = 0, column = 2)
         
-        export = tk.Button(self, text="Export data",height = 2, width = 13,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        export = tk.Button(self, text="Export data",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         export.grid(row = 0, column = 3)
         
         
-
-        spacer3 = tk.Label(self, text="")
-        spacer3.grid(row = 1 , column = 0)
+        labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
+        labelsp33.grid(row = 1 , column = 1) 
      
         
         labeltitle2 = tk.Label(self, text="Set the smoke probe position",   bg='red', fg='white', font=('helvetica', 20, 'bold'))
@@ -463,7 +449,7 @@ class PageThree(tk.Frame):
         
         
         bar = tk.Scale(self, from_=-200, to=200,orient=tk.HORIZONTAL, length=2000,tickinterval=50, width = 100 ,font=('helvetica', 10, 'bold'))
-        bar.grid(row = 5 , column = 0, columnspan =4)  
+        bar.grid(row = 5 , column = 0, columnspan =4)
   
 
 class PageFour(tk.Frame):
@@ -472,17 +458,22 @@ class PageFour(tk.Frame):
         tk.Frame.__init__(self, parent)
         
         
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 2, width = 15,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         SpeedAndPitch.grid(row = 0 , column = 0)
         
-        Measurments = tk.Button(self, text="Measurements",height = 2, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        Measurments = tk.Button(self, text="Measurements",height = 3, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         Measurments.grid(row = 0 , column = 1)   
         
-        probe = tk.Button(self, text="Adjust probe",height = 2, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         probe.grid(row = 0, column = 2)
         
-        export = tk.Button(self, text="Export data",height = 2, width = 13,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        export = tk.Button(self, text="Export data",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) # 
         export.grid(row = 0, column = 3)
+        
+        
+        labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
+        labelsp33.grid(row = 1 , column = 1) 
+     
         
         
         tkvar = tk.StringVar(self)
@@ -492,7 +483,7 @@ class PageFour(tk.Frame):
         tkvar2 = tk.StringVar(self)
         tkvar2.set('Select ') 
         
-        lablemen= tk.Label(self, text = "Select start time", font=('helvetica', 20, 'bold'))
+        lablemen= tk.Label(self, text = "Select start time", font=('helvetica', 15, 'bold'))
         lablemen.grid(row = 1 , column = 1)
         
         #popupMenu = tk.OptionMenu(self, tkvar, *choices)
@@ -511,7 +502,7 @@ class PageFour(tk.Frame):
         cb2.set("End time")
         cb2.grid(row = 2, column = 2)
         
-        lablemen= tk.Label(self, text = "Select end time", font=('helvetica', 20, 'bold'))
+        lablemen= tk.Label(self, text = "Select end time", font=('helvetica', 15, 'bold'))
         lablemen.grid(row = 1 , column = 2)
         
         #popupMenu2 = tk.OptionMenu(self, tkvar2, *choices2)
@@ -545,11 +536,15 @@ class PageFour(tk.Frame):
                     csv_writer.writerow([i[0] for i in cursor.description])
                     csv_writer.writerows(cursor)
 
-        export2 = tk.Button(self, text="Export ",height = 2, width = 13,command=export_to_csv, bg='red', fg='white', font=('helvetica', 30, 'bold')) # 
+        export2 = tk.Button(self, text="Export ",height = 2, width = 10,command=export_to_csv, bg='red', fg='white', font=('helvetica', 20, 'bold')) # 
         export2.grid(row = 2, column = 0)
         
-        updateliste = tk.Button(self, text="Update list ",height = 2, width = 13,command=update_times_list, bg='red', fg='white', font=('helvetica', 30, 'bold')) # 
-        updateliste.grid(row = 3, column = 0)
+        
+        lablespacer= tk.Label(self, text = "", font=('helvetica', 20, 'bold'))
+        lablespacer.grid(row = 3, column = 0)
+        
+        updateliste = tk.Button(self, text="Update list ",height = 2, width = 10,command=update_times_list, bg='red', fg='white', font=('helvetica', 20, 'bold')) # 
+        updateliste.grid(row = 4, column = 0)
         
 
 ###### GLOBAL FUNCTIONS ######################################################################
@@ -565,12 +560,17 @@ def create_window_graph(xas,yas,labname):
     #t1 = np.arange(10, 15, .01) #plotter x axes
 
     
-    fig = Figure(figsize=(5, 4), dpi=150)
+    fig = Figure(figsize=(8, 4), dpi=80)
     
-    fig.add_subplot(111).plot(xas,yas, 'r--', label = labname) #plotter y og x axes NB DE MÅ VÆRE LIKE LANGE OM DU VIL HA EN NY LINJE COPY PAST DENNE
+    ax = fig.add_subplot(111)
+    ax.plot(xas,yas, 'r--', label = labname)#plotter y og x axes NB DE MÅ VÆRE LIKE LANGE OM DU VIL HA EN NY LINJE COPY PAST DENNE
+    ax.set_xlim(xmin =1 , xmax = 10)
+    
     
 
     fig.legend()
+    
+    
     
     
     canvas = FigureCanvasTkAgg(fig, master=window)  
@@ -708,7 +708,6 @@ def NewWindow():
     button.grid(row=15, column = 0)   
     
     return window
-
 
 
 
