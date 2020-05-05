@@ -26,7 +26,24 @@ LARGE_FONT= ("Verdana", 12)
 
 ######################################## initialization  ##################################
 
-db_cursor = "" 
+db_cursor = ""
+
+f = Figure(figsize=(5,4), dpi=100)
+a = f.add_subplot(111)
+
+def animate(i):
+    
+    pullData = open('test2.txt','r').read()
+    dataArray = pullData.split('\n')
+    xar=[]
+    yar=[]
+    for eachLine in dataArray:
+        if len(eachLine)>1:
+            x,y = eachLine.split(',')
+            xar.append(int(x))
+            yar.append(int(y))
+    a.clear()
+    a.plot(xar,yar) 
 
 
 ########################### PAGE FUNCTION #######################################+
