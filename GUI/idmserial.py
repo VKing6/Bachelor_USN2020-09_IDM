@@ -38,14 +38,14 @@ class SerialCommunicator:
         self.data = data
         self.stop_event = stop_event
         
-        self.ser = serial.Serial(port=port, baudrate=rate, timeout=timeout)
-        self.transmitter = self.SerialTransmitter(self.ser)
-        self.receiver = self.SerialReceiver(self.ser, self.data, self.stop_event)
-        self.receiver.start()
-
-    #def __del__(self):  # Destructor, but doesn't work
-        #print(__name__, "Destructor")
-        #self.close()
+        try:
+            self.ser = serial.Serial(port=port, baudrate=rate, timeout=timeout)
+            self.transmitter = self.SerialTransmitter(self.ser)
+            self.receiver = self.SerialReceiver(self.ser, self.data, self.stop_event)
+            self.receiver.start()
+        except SerialException:
+            print("Exception in", __name__, ", ignoring")
+            pass
         
     def close(self):
         print(__name__, "Close")
