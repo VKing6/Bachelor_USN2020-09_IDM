@@ -509,12 +509,11 @@ class PageFour(tk.Frame):
         #popupMenu2.grid(row = 2 , column = 2)
        
         def update_times_list():
-            cblist = list()
             c = controller.cursor
-            for row in c.execute('SELECT time date FROM data'):
-                cblist.append(row)
-                cb['values'] = cblist
-                cb2['values'] = cblist
+            c.execute('SELECT time FROM data')
+            cblist = c.fetchall()
+            cb['values'] = cblist
+            cb2['values'] = cblist
         update_times_list()
         
         def export_to_csv():
