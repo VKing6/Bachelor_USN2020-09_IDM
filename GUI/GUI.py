@@ -29,33 +29,8 @@ LARGE_FONT= ("Verdana", 12)
 
 db_cursor = ""
 
-f = Figure(figsize=(5,4), dpi=100)
-a = f.add_subplot(111)
 
-def animate(i):
-    c = app.cursor
-    c.execute("SELECT time, windspeed FROM data")
-    fetch = c.fetchall()
     
-    Xaxes = [x for (x, y) in fetch]
-    Yaxes = [y for (x, y) in fetch]
-
-
-    #test3 = np.array(test)
-    pltYaxes = np.array(Yaxes)
-    pltXaxes = np.array(Xaxes)
-
-   # pullData = open('test2.txt','r').read()
-    #dataArray = pullData.split('\n')
-    #xar=[]
-    #yar=[]
-   # for eachLine in dataArray:
-        #if len(eachLine)>1:
-            #x,y = eachLine.split(',')
-            #xar.append(int(x))
-           # yar.append(int(y))
-    a.clear()
-    a.plot(pltXaxes,pltYaxes)
 
 
 ########################### PAGE FUNCTION #######################################+
@@ -116,8 +91,6 @@ class IDM_app(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame(StartPage) # viser første side
-        #self.geometry("800x480")
-        self.geometry("800x480")
         self.title("IDM")
 
 
@@ -139,6 +112,7 @@ class IDM_app(tk.Tk):
                     d["pitch"], d["airpressure"], d["dragforce"], d["liftforce"]))
             self.database.commit()
         self.after(1000, self.amend_database)
+
 
 
 
@@ -386,7 +360,7 @@ class PageTwo(tk.Frame):
 
 
 
-        AirVelocity = tk.Button(self, text="Air Velocity",command=lambda: controller.show_frame(PageFive),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
+        AirVelocity = tk.Button(self, text="Air Velocity",command=graph_window,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         AirVelocity.grid(row = 4, column = 0)
         lableAirV = tk.Label(self, text="5 m/s", textvariable = self.windspeed, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         lableAirV.grid(row = 4, column = 1)
@@ -580,13 +554,37 @@ class PageFive(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
+        def update():
+            animate()
+       
+    
+        f = Figure(figsize=(5,4), dpi=100)
+        a = f.add_subplot(111)
+
         
-        back = tk.Button(self, text="back",height = 2, width = 13,command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 30, 'bold')) # 
+        def animate(i):
+            c = app.cursor
+            c.execute("SELECT time, windspeed FROM data")
+            fetch = c.fetchall()
+        
+            Xaxes = [x for (x, y) in fetch]
+            Yaxes = [y for (x, y) in fetch]
+        
+        
+            #test3 = np.array(test)
+            pltYaxes = np.array(Yaxes)
+            pltXaxes = np.array(Xaxes)
+
+            a.clear()
+            a.plot(pltXaxes,pltYaxes)
+                    
+
+        back = tk.Button(self, text="back",height = 2, width = 13,command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 15, 'bold')) #
         back.pack()
-        
-        
-        
-        
+
+
+
         label = ttk.Label(self, text="Windspeed", font=LARGE_FONT)
         label.pack(pady=10,padx=10)
 
@@ -594,16 +592,70 @@ class PageFive(tk.Frame):
 
 
 
-        canvas = FigureCanvasTkAgg(f, master=self)  
+        canvas = FigureCanvasTkAgg(f, master=self)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
         toolbar = NavigationToolbar2Tk( canvas, self )
         toolbar.update()
         canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        #self.ani = animation.FuncAnimation(f,animate, interval=5000)
 
 
 
+
+
+
+def graph_window():
+    
+    
+    root = tk.Tk()
+    root.wm_title("Embedding in Tk")
+    
+    f = Figure(figsize=(5,4), dpi=100)
+    a = f.add_subplot(111)
+
+    
+    def animate(i):
+        c = app.cursor
+        c.execute("SELECT time, windspeed FROM data")
+        fetch = c.fetchall()
+    
+        Xaxes = [x for (x, y) in fetch]
+        Yaxes = [y for (x, y) in fetch]
+    
+    
+        #test3 = np.array(test)
+        pltYaxes = np.array(Yaxes)
+        pltXaxes = np.array(Xaxes)
+
+        a.clear()
+        a.plot(pltXaxes,pltYaxes)
+    
+    canvas = FigureCanvasTkAgg(f, master=root)  # A tk.DrawingArea.
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    
+    toolbar = NavigationToolbar2Tk(canvas, root)
+    toolbar.update()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    
+
+    
+    
+    def _quit():
+        root.quit()     # stops mainloop
+        root.destroy()
+        
+    button = tk.Button(master=root, text="Quit", command=_quit)
+    button.pack(side=tk.BOTTOM)
+    root.ani = animation.FuncAnimation(f,animate, interval=50000, blit = False)
+
+    root.geometry("800x480+0+0")
+    root.update_idletasks()
+    root.attributes("-fullscreen", True)
+    root.update_idletasks()
+    root.mainloop()
 ###### GLOBAL FUNCTIONS ######################################################################
 
 
@@ -770,9 +822,14 @@ def NewWindow():
 
 app = IDM_app()
 
-#app.resizable(0, 0)
-#app.attributes("-type","splash")
-ani = animation.FuncAnimation(f,animate, interval=1000)
+
+
+
+# Remove header and force window size
+app.geometry("800x480+0+0")
+app.update_idletasks()
+app.attributes("-fullscreen", True)
+app.update_idletasks()
 
 # Run the program
 app.mainloop()
