@@ -21,6 +21,7 @@ import datetime
 import threading
 import dataobject
 import idmserial
+import time
 
 
 LARGE_FONT= ("Verdana", 12)
@@ -405,12 +406,6 @@ class PageTwo(tk.Frame):
         lablefroceV.grid(row = 8, column = 3)
 
 
-        Second_entry = tk.Entry(self)
-        Second_entry.grid(row=9, column=1, columnspan = 1)
-        Second_entry.insert(0,60)
-
-        lablesec = tk.Label(self, text = "Optinal: Enter seconds to plt in graph")
-        lablesec.grid(row=9, column=0 )
 
 
  ###################################  PAGE 3 Røykprobe  #####################################################
@@ -614,23 +609,34 @@ def graph_window():
     
     f = Figure(figsize=(5,4), dpi=100)
     a = f.add_subplot(111)
+   
 
     
     def animate(i):
+        c1 = app.cursor
+        c1.execute("SELECT time FROM data ORDER BY time DESC LIMIT 1")
+        now_time_string = c1.fetchone()[0]
+        now_time = datetime.datetime.fromisoformat(now_time_string)
+    
+        then_time = now_time - datetime.timedelta(seconds=3)
+        then_time_string = then_time.isoformat()
+    
+    
+        b = (then_time_string, now_time_string)
+
         c = app.cursor
-        c.execute("SELECT time, windspeed FROM data")
+        c.execute("SELECT time, windspeed FROM data WHERE time BETWEEN ? AND ?",b)
         fetch = c.fetchall()
     
         Xaxes = [x for (x, y) in fetch]
         Yaxes = [y for (x, y) in fetch]
     
-    
-        #test3 = np.array(test)
         pltYaxes = np.array(Yaxes)
         pltXaxes = np.array(Xaxes)
 
         a.clear()
         a.plot(pltXaxes,pltYaxes)
+        
     
     canvas = FigureCanvasTkAgg(f, master=root)  # A tk.DrawingArea.
     canvas.draw()
@@ -639,22 +645,19 @@ def graph_window():
     toolbar = NavigationToolbar2Tk(canvas, root)
     toolbar.update()
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-    
 
     
-    
     def _quit():
-        root.quit()     # stops mainloop
+        root.quit()     
         root.destroy()
         
     button = tk.Button(master=root, text="Quit", command=_quit)
     button.pack(side=tk.BOTTOM)
-    root.ani = animation.FuncAnimation(f,animate, interval=50000, blit = False)
+   # time.sleep(10)
+    root.ani = animation.FuncAnimation(f,animate, interval=5000)
 
     root.geometry("800x480+0+0")
-    root.update_idletasks()
     root.attributes("-fullscreen", True)
-    root.update_idletasks()
     root.mainloop()
 ###### GLOBAL FUNCTIONS ######################################################################
 
