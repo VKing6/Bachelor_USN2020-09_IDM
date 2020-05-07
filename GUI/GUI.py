@@ -609,7 +609,14 @@ def graph_window():
     
     f = Figure(figsize=(5,4), dpi=100)
     a = f.add_subplot(111)
-   
+    
+    #a.xaxis.set_ticks(np.arange(7))
+    #print(__name__, a.get_xticks())
+    #ax = f.add_axes([0.1, 0.1, 0.9, 0.9])
+    #
+    #a.set_xticklabels(["-60", "-50", "-40", "-30", "-20", "-10", "0"])
+    
+    #a.locator_params(axis='x', nbins=10)
 
     
     def animate(i):
@@ -618,33 +625,44 @@ def graph_window():
         now_time_string = c1.fetchone()[0]
         now_time = datetime.datetime.fromisoformat(now_time_string)
     
-        then_time = now_time - datetime.timedelta(seconds=3)
+        then_time = now_time - datetime.timedelta(seconds=13)
         then_time_string = then_time.isoformat()
     
-    
+        
+
+        
         b = (then_time_string, now_time_string)
 
         c = app.cursor
         c.execute("SELECT time, windspeed FROM data WHERE time BETWEEN ? AND ?",b)
         fetch = c.fetchall()
-    
-        Xaxes = [x for (x, y) in fetch]
-        Yaxes = [y for (x, y) in fetch]
-    
-        pltYaxes = np.array(Yaxes)
-        pltXaxes = np.array(Xaxes)
+        
 
+           
+        
+    
+        Xaxes = [x[-5:] for (x, y) in fetch]
+        Yaxes = [y for (x, y) in fetch]
+        
+       # a.locator_params(axis='Xaxes', nbins=10)
+
+        pltXaxes = np.array(Xaxes)
+        pltYaxes = np.array(Yaxes)
+        
+    
         a.clear()
         a.plot(pltXaxes,pltYaxes)
         
+        #ax.plot(pltYaxes)
+        
     
     canvas = FigureCanvasTkAgg(f, master=root)  # A tk.DrawingArea.
+
     canvas.draw()
-    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
     
-    toolbar = NavigationToolbar2Tk(canvas, root)
-    toolbar.update()
-    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+   # toolbar = NavigationToolbar2Tk(canvas, root)
+    #toolbar.update()
 
     
     def _quit():
@@ -654,7 +672,7 @@ def graph_window():
     button = tk.Button(master=root, text="Quit", command=_quit)
     button.pack(side=tk.BOTTOM)
    # time.sleep(10)
-    root.ani = animation.FuncAnimation(f,animate, interval=5000)
+    root.ani = animation.FuncAnimation(f,animate, interval=1000)
 
     root.geometry("800x480+0+0")
     root.attributes("-fullscreen", True)
