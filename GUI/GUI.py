@@ -79,7 +79,7 @@ class IDM_app(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, PageOne, PageTwo, PageThree,PageFour,PageFive): #antall sider som skal lages i programmet
+        for F in (StartPage, PageOne, PageTwo, PageThree,PageFour): #antall sider som skal lages i programmet
 
             frame = F(container, self)
 
@@ -154,7 +154,7 @@ class StartPage(tk.Frame):
         labelsp3 = tk.Label(self, text="                  ",  font=('helvetica', 30, 'bold'))
         labelsp3.grid(row = 1 , column = 0)
 
-        labelsp4 = tk.Label(self, text="Project members: ", bg='red', fg='white', font=('helvetica', 30, 'bold'))
+        labelsp4 = tk.Label(self, text="Welcome to the Windtunnel software ", bg='red', fg='white', font=('helvetica', 30, 'bold'))
         labelsp4.grid(row = 2 , column = 0, columnspan = 4)
 
         Kristian = tk.Label(self, text="Kristian Auestad", font=('helvetica', 30, 'bold'))
@@ -522,59 +522,6 @@ class PageFour(tk.Frame):
 
 
 
-class PageFive(tk.Frame):
-
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        def update():
-            animate()
-       
-    
-        f = Figure(figsize=(5,4), dpi=100)
-        a = f.add_subplot(111)
-
-        
-        def animate(i):
-            c = app.cursor
-            c.execute("SELECT time, windspeed FROM data")
-            fetch = c.fetchall()
-        
-            Xaxes = [x for (x, y) in fetch]
-            Yaxes = [y for (x, y) in fetch]
-        
-        
-            #test3 = np.array(test)
-            pltYaxes = np.array(Yaxes)
-            pltXaxes = np.array(Xaxes)
-
-            a.clear()
-            a.plot(pltXaxes,pltYaxes)
-                    
-
-        back = tk.Button(self, text="back",height = 2, width = 13,command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 15, 'bold')) #
-        back.pack()
-
-
-
-        label = ttk.Label(self, text="Windspeed", font=LARGE_FONT)
-        label.pack(pady=10,padx=10)
-
-
-
-
-
-        canvas = FigureCanvasTkAgg(f, master=self)
-        canvas.draw()
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
-        toolbar = NavigationToolbar2Tk( canvas, self )
-        toolbar.update()
-        canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        #self.ani = animation.FuncAnimation(f,animate, interval=5000)
-
-
-
 
 
 
@@ -583,7 +530,8 @@ def graph_window(database_val,lable):
     
     root = tk.Tk()
     root.wm_title("Embedding in Tk")
-    
+    graf_name = tk.Label(root, text= lable,   bg='green', fg='white', font=('helvetica', 15, 'bold'))
+    graf_name.pack(side=tk.TOP)
     f = Figure(figsize=(5,4), dpi=100)
     a = f.add_subplot(111)
     insert_val =database_val
@@ -636,9 +584,10 @@ def graph_window(database_val,lable):
         root.quit()     
         root.destroy()
     
-    graf_name = tk.Label(root, text= lable)
-    graf_name.pack()
-    button = tk.Button(master=root, text="Quit", command=_quit)
+
+   # spacer = tk.Label(root, text= "")
+    #spacer.pack()
+    button = tk.Button(master=root, text="Quit", command=_quit, bg='red', fg='white', font=('helvetica', 30, 'bold'))
     button.pack(side=tk.BOTTOM)
    # time.sleep(10)
     root.ani = animation.FuncAnimation(f,animate, interval=1000)
