@@ -311,29 +311,6 @@ class PageTwo(tk.Frame):
 
         self.after(0, update_display)
 
-        def windspeed():
-            sec= int(Second_entry.get())
-            pltGraph("SELECT windspeed FROM data WHERE time BETWEEN ? AND ?","Windspeed",sec)
-
-        def temperature():
-            sec= int(Second_entry.get())
-            pltGraph("SELECT temperature FROM data WHERE time BETWEEN ? AND ?","Temperature",sec)
-
-        def humidity():
-            sec= int(Second_entry.get())
-            pltGraph("SELECT humidity FROM data WHERE time BETWEEN ? AND ?","Humidity",sec)
-
-        def airpressure():
-            sec= int(Second_entry.get())
-            pltGraph("SELECT airpressure FROM data WHERE time BETWEEN ? AND ?","Airpressure",sec)
-
-        def dragforce():
-            sec= int(Second_entry.get())
-            pltGraph("SELECT dragforce FROM data WHERE time BETWEEN ? AND ?","Dragforce",sec)
-
-        def liftforce():
-            sec= int(Second_entry.get())
-            pltGraph("SELECT liftforce FROM data WHERE time BETWEEN ? AND ?","Liftforce",sec)
 
 
         SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
@@ -361,7 +338,7 @@ class PageTwo(tk.Frame):
 
 
 
-        AirVelocity = tk.Button(self, text="Air Velocity",command=graph_window,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
+        AirVelocity = tk.Button(self, text="Air Velocity",command=lambda: graph_window("SELECT time, windspeed FROM data WHERE time BETWEEN ? AND ?", "windspeed"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         AirVelocity.grid(row = 4, column = 0)
         lableAirV = tk.Label(self, text="5 m/s", textvariable = self.windspeed, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         lableAirV.grid(row = 4, column = 1)
@@ -370,7 +347,7 @@ class PageTwo(tk.Frame):
         spacer4 = tk.Label(self, text="")
         spacer4.grid(row = 5 , column = 0)
 
-        Airtemp = tk.Button(self, text="Air Temprature",command=temperature,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
+        Airtemp = tk.Button(self, text="Air Temprature",command=lambda: graph_window("SELECT time, temperature FROM data WHERE time BETWEEN ? AND ?","Temperature"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         Airtemp.grid(row = 6, column = 0)
         labletemp = tk.Label(self, textvariable = self.temperature ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         labletemp.grid(row = 6, column = 1)
@@ -379,7 +356,7 @@ class PageTwo(tk.Frame):
         spacer5 = tk.Label(self, text="")
         spacer5.grid(row = 7 , column = 0)
 
-        Airhum = tk.Button(self, text="Air Humidity",command=humidity,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
+        Airhum = tk.Button(self, text="Air Humidity",command=lambda: graph_window("SELECT time, humidity FROM data WHERE time BETWEEN ? AND ?","Humidity"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         Airhum.grid(row = 8, column = 0)
         lableAirhum = tk.Label(self, text="1500", textvariable=self.humidity, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         lableAirhum.grid(row = 8, column = 1)
@@ -387,20 +364,20 @@ class PageTwo(tk.Frame):
 
 
 
-        Airpress = tk.Button(self, text="Air pressure",command=airpressure,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
+        Airpress = tk.Button(self, text="Air pressure",command=lambda: graph_window("SELECT time, airpressure FROM data WHERE time BETWEEN ? AND ?","Airpressure"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         Airpress.grid(row = 4, column = 2)
         lableAirpress = tk.Label(self, text="15 kg/m3", textvariable=self.airpressure, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         lableAirpress.grid(row = 4, column = 3)
 
 
 
-        forceH = tk.Button(self, text="Drag force",command=dragforce,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
+        forceH = tk.Button(self, text="Drag force",command=lambda: graph_window("SELECT time, dragforce FROM data WHERE time BETWEEN ? AND ?","Dragforce"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         forceH.grid(row = 6, column = 2)
         lableforceH = tk.Label(self, text="2 N", textvariable=self.dragforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         lableforceH.grid(row = 6, column = 3)
 
 
-        froceV = tk.Button(self, text="Lift force",command=liftforce,height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
+        froceV = tk.Button(self, text="Lift force",command=lambda: graph_window("SELECT time, liftforce FROM data WHERE time BETWEEN ? AND ?","Liftforce"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         froceV.grid(row = 8, column = 2)
         lablefroceV = tk.Label(self, text="15 N", textvariable=self.liftforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         lablefroceV.grid(row = 8, column = 3)
@@ -601,7 +578,7 @@ class PageFive(tk.Frame):
 
 
 
-def graph_window():
+def graph_window(database_val,lable):
     
     
     root = tk.Tk()
@@ -609,16 +586,8 @@ def graph_window():
     
     f = Figure(figsize=(5,4), dpi=100)
     a = f.add_subplot(111)
-    
-    #a.xaxis.set_ticks(np.arange(7))
-    #print(__name__, a.get_xticks())
-    #ax = f.add_axes([0.1, 0.1, 0.9, 0.9])
-    #
-    #a.set_xticklabels(["-60", "-50", "-40", "-30", "-20", "-10", "0"])
-    
-    #a.locator_params(axis='x', nbins=10)
+    insert_val =database_val
 
-    
     def animate(i):
         c1 = app.cursor
         c1.execute("SELECT time FROM data ORDER BY time DESC LIMIT 1")
@@ -627,18 +596,16 @@ def graph_window():
     
         then_time = now_time - datetime.timedelta(seconds=13)
         then_time_string = then_time.isoformat()
-    
-        
+
 
         
         b = (then_time_string, now_time_string)
 
         c = app.cursor
-        c.execute("SELECT time, windspeed FROM data WHERE time BETWEEN ? AND ?",b)
+        c.execute(insert_val,b)
         fetch = c.fetchall()
         
 
-           
         
     
         Xaxes = [x[-5:] for (x, y) in fetch]
@@ -668,7 +635,9 @@ def graph_window():
     def _quit():
         root.quit()     
         root.destroy()
-        
+    
+    graf_name = tk.Label(root, text= lable)
+    graf_name.pack()
     button = tk.Button(master=root, text="Quit", command=_quit)
     button.pack(side=tk.BOTTOM)
    # time.sleep(10)
@@ -677,167 +646,8 @@ def graph_window():
     root.geometry("800x480+0+0")
     root.attributes("-fullscreen", True)
     root.mainloop()
-###### GLOBAL FUNCTIONS ######################################################################
 
 
-
-def create_window_graph(xas,yas,labname):
-
-    window = tk.Toplevel()
-
-
-    #t = np.arange(5, 10, .01) #plotter x axes
-    #t1 = np.arange(10, 15, .01) #plotter x axes
-
-
-    fig = Figure(figsize=(8, 4), dpi=80)
-
-    ax = fig.add_subplot(111)
-    ax.plot(xas,yas, 'r--', label = labname)#plotter y og x axes NB DE MÅ VÆRE LIKE LANGE OM DU VIL HA EN NY LINJE COPY PAST DENNE
-    ax.set_xlim(xmin =1 , xmax = 10)
-
-
-
-    fig.legend()
-
-
-
-
-    canvas = FigureCanvasTkAgg(fig, master=window)
-    canvas.draw()
-    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
-    toolbar = NavigationToolbar2Tk(canvas, window)
-    toolbar.update()
-    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
-
-    def on_key_press(event):
-        print("you pressed {}".format(event.key))
-        key_press_handler(event, canvas, toolbar)
-
-
-    canvas.mpl_connect("key_press_event", on_key_press)
-
-
-    def _quit():
-        #window.quit()
-        window.destroy()
-
-    lable32 = tk.Label(master = window, text = "Time")
-    lable32.pack()
-
-    sap = tk.Label(master = window, text = "")
-    sap.pack()
-
-    button = tk.Button(master=window, text="Quit", command=_quit, bg='red', fg='white', font=('helvetica', 10, 'bold'))
-    button.pack()
-
-
-
- ################################################################################################
-
-
-def pltGraph(valdata,labname,secval):
-    c = app.cursor
-    c.execute("SELECT time FROM data ORDER BY time DESC LIMIT 1")
-    now_time_string = c.fetchone()[0]
-    now_time = datetime.datetime.fromisoformat(now_time_string)
-
-    then_time = now_time - datetime.timedelta(seconds=secval)
-    then_time_string = then_time.isoformat()
-
-
-    b = (then_time_string, now_time_string)
-
-    # test = list()
-    Yaxes = list()
-    Xaxes = list()
-
-    #for row in c.execute('SELECT temperature FROM data'):
-        #test.append(row)
-
-     #for row in c.execute("SELECT windspeed FROM data WHERE time BETWEEN ? AND ?", b):
-        #Yaxes.append(row)
-
-    for row in c.execute(valdata, b):
-        Yaxes.append(row)
-
-
-    for row in c.execute("SELECT time FROM data WHERE time BETWEEN ? AND ?", b):
-        Xaxes.append(row[0][-8:])
-
-    #test3 = np.array(test)
-    pltYaxes = np.array(Yaxes)
-    pltXaxes = np.array(Xaxes)
-
-
-    create_window_graph(pltXaxes, pltYaxes,labname)
-
-   # print(pltYaxes)
-
-    #c.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", b)
-    #print(c.fetchall())
-
-    #print(then_time_string)
-
-    #print(now_time_string)
-
-
-
-
-################################################################################################
-
-
-
-
-def create_window_picture(pic):
-
-    window = tk.Toplevel()
-
-    load = Image.open(pic) # set in file directory
-    render = ImageTk.PhotoImage(load)
-
-
-    img = tk.Label(window, image=render)
-
-    img.image = render
-    img.place(x=0, y=0)
-
-    img.pack()
-
-
-    def _quit():
-       # window.quit()
-        window.destroy()
-
-
-
-    button = tk.Button(master=window, text="Quit", command=_quit, bg='red', fg='white', font=('helvetica', 10, 'bold'))
-    button.pack()
-
-
-
-################################################################################################
-
-
-def NewWindow():
-
-    window = tk.Toplevel()
-
-    window.grid_rowconfigure(0, weight=1)
-    window.grid_columnconfigure(0, weight=1)
-
-
-    def _quit():
-        #window.quit()
-        window.destroy()
-
-
-    button = tk.Button(master=window, text="Quit", command=_quit, bg='red', fg='white', font=('helvetica', 10, 'bold'))
-    button.grid(row=15, column = 0)
-
-    return window
 
 
 
