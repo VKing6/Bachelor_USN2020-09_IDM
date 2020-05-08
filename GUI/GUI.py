@@ -186,7 +186,7 @@ class PageOne(tk.Frame):
         self.transmitter = controller.comm
 
         counterFan = tk.IntVar()
-        maxFan, minFan = 0, 100
+        maxFan, minFan = 100, 0
         def increaseFan():
             current = counterFan.get()
             if current < maxFan:
@@ -194,7 +194,7 @@ class PageOne(tk.Frame):
                 self.transmitter.transmit(f"W{new}")
                 counterFan.set(new)
 
-        def decreasefan():
+        def decreaseFan():
             current = counterFan.get()
             if current > minFan:
                 new = current - 1
@@ -203,6 +203,7 @@ class PageOne(tk.Frame):
         
         def StopFan():
             counterFan.set(0)
+            self.transmitter.transmit(f"W0")
 
 
         counterPitch = tk.IntVar()
@@ -224,6 +225,7 @@ class PageOne(tk.Frame):
 
         def ResetPitch():
             counterPitch.set(0)
+            self.transmitter.transmit(f"P0")
 
 
 
@@ -273,14 +275,12 @@ class PageOne(tk.Frame):
         Speedinc = tk.Button(self, text="Increase",command=increaseFan, bg='cyan', fg='black',height = 2 , width =10, font=('helvetica', 20, 'bold')) #
         Speedinc.grid(row = 6 , column = 1)
 
-        Speeddec = tk.Button(self, text="Decrease",command=decreasefan, bg='yellow', fg='black',height = 2 , width =10, font=('helvetica', 20, 'bold')) #
+        Speeddec = tk.Button(self, text="Decrease",command=decreaseFan, bg='yellow', fg='black',height = 2 , width =10, font=('helvetica', 20, 'bold')) #
         Speeddec.grid(row = 7 , column = 1)
 
 
         pitchinc = tk.Button(self, text="Increase",command=increasePitch, bg='cyan', fg='black', height = 2 , width =10,font=('helvetica', 20, 'bold')) #
         pitchinc.grid(row = 6 , column = 2)
-
-
 
         pitchdec = tk.Button(self, text="Decrease",command=decreasePitch, bg='yellow', fg='black',height = 2 , width =10, font=('helvetica', 20, 'bold')) #
         pitchdec.grid(row = 7, column = 2)
