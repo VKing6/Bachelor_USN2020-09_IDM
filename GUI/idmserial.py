@@ -28,6 +28,11 @@ class SerialCommunicator:
             self.ser = serialport
 
         def transmit(self, message):
+            # Ensure message is properly terminated
+            if message[-1:] != "X":
+                if message[-1:] == "x":
+                    message = message[:-1]
+                message = message + "X"
             self.ser.write(message.encode())
             print(__name__, "Transmitted", message.encode())
 
