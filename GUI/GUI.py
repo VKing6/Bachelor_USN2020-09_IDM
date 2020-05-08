@@ -495,11 +495,11 @@ class PageFour(tk.Frame):
             startTime, endTime = cb.get(), cb2.get()
             if (startTime>=endTime):
                 tk.messagebox.showerror("Error", "Start time can not be less or equal to end time")
-            else:                
+            else:
                 #export_file_path = filedialog.asksaveasfilename(defaultextension='.csv')
                 export_file_path = f"/var/www/idm.com/public_html/{endTime}.csv"
 
-                print ("Exporting data into CSV............")
+                #print ("Exporting data into CSV............")
                 cursor = controller.cursor
                 q = (startTime, endTime)
                 cursor.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q)
