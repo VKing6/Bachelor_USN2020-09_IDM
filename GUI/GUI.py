@@ -605,7 +605,7 @@ app = IDM_app()
 
 
 
-# Remove header and force window size
+# Remove header and force window to touchscreen
 app.geometry("800x480+0+0")
 app.update_idletasks()
 app.attributes("-fullscreen", True)
