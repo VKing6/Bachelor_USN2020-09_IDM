@@ -183,27 +183,47 @@ class PageOne(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        counterFan = tk.IntVar()
+        self.transmitter = controller.comm
 
+        counterFan = tk.IntVar()
+        maxFan, minFan = 0, 100
         def increaseFan():
-            counterFan.set(counterFan.get() + 1)
+            current = counterFan.get()
+            if current < maxFan:
+                new = current + 1
+                self.transmitter.transmit(f"W{new}")
+                counterFan.set(new)
 
         def decreasefan():
-            counterFan.set(counterFan.get() - 1)
+            current = counterFan.get()
+            if current > minFan:
+                new = current - 1
+                self.transmitter.transmit(f"W{new}")
+                counterFan.set(new)
+        
+        def StopFan():
+            counterFan.set(0)
+
 
         counterPitch = tk.IntVar()
+        maxPitch, minPitch = 10, -10
 
         def increasePitch():
-            counterPitch.set(counterPitch.get() + 1)
+            current = counterPitch.get()
+            if current < maxPitch:
+                new = current + 1
+                self.transmitter.transmit(f"P{new}")
+                counterPitch.set(new)
 
         def decreasePitch():
-            counterPitch.set(counterPitch.get() - 1)
-
-        def StopFan():
-            counterFan.set(counterFan.get() * 0)
+            current = counterPitch.get()
+            if current > minPitch:
+                new = current - 1
+                self.transmitter.transmit(f"P{new}")
+                counterPitch.set(new)
 
         def ResetPitch():
-            counterPitch.set(counterPitch.get() * 0)
+            counterPitch.set(0)
 
 
 

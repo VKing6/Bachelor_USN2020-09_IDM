@@ -20,7 +20,7 @@ struct SensorData {
 
 struct InputData {
     int setWindSpeed;
-    bool runFan;
+    int setPitch;
 };
 
 dht DHT;
@@ -107,11 +107,13 @@ void setup() {
 
     //sensorData.temperature = -2;
     //sensorData.humidity = -3;
-    sensorData.pitch = -4;
-    sensorData.airPressure = -5;
+    //sensorData.pitch = -4;
+    //sensorData.airPressure = -5;
     sensorData.dragForce = -6;
     sensorData.liftForce = -7;
     // -- Faux sensors
+    inputData.setWindSpeed = 0;
+    inputData.setPitch = 0;
 }
 
 void loop() {
@@ -122,9 +124,11 @@ void loop() {
     if (currentTime - previousPollTime >= pollInterval) {
       previousPollTime = currentTime;
       // ++ Faux sensors
-      sensorData.windSpeed = analogRead(potPin);
+      sensorData.windSpeed = map(analogRead(potPin), 0, 1023, 0, 100);
       sensorData.hatchClosed = (digitalRead(startStopPin)) ? false : true;
       sensorData.fanRunning = (digitalRead(hatchSafetyPin)) ? false : true;
+      sensorData.pitch = inputData.setPitch;
+      sensorData.airPressure = inputData.setWindSpeed;
       // -- Faux sensors
     }
 
@@ -160,18 +164,18 @@ void loop() {
             //Serial.println(inputString);
             inputData.setWindSpeed = inputString.toInt();
             break;
-          case 'F': case 'f':
+          case 'P': case 'p':
             inputString.remove(0,1);
             inputString.remove(inputString.length());
             //Serial.println(inputString);
-            inputData.runFan = inputString.toInt();
+            inputData.setPitch = inputString.toInt();
             break;
           default:
             //Serial.print("D3");
             break;
         }
-        Serial.print("ID:");Serial.print(inputData.setWindSpeed);
-        Serial.print("|");Serial.println(inputData.runFan);
+        //Serial.print("ID:");Serial.print(inputData.setWindSpeed);
+        //Serial.print("|");Serial.println(inputData.setPitch);
         inputString = "";
         stringComplete = false;
     }
