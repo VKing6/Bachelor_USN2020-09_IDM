@@ -34,7 +34,7 @@ class SerialCommunicator:
                     message = message[:-1]
                 message = message + "X"
             self.ser.write(message.encode())
-            print(__name__, "Transmitted", message.encode())
+            //print(__name__, "Transmitted", message.encode())
 
 
     def __init__(self, data, stop_event,
@@ -45,12 +45,20 @@ class SerialCommunicator:
         
         try:
             self.ser = serial.Serial(port=port, baudrate=rate, timeout=timeout)
+        except serial.SerialException:
+            print("Exception in serialport")
+
+        try:
             self.transmitter = self.SerialTransmitter(self.ser)
+        except:
+            print("Exception in transmitter")
+
+        try:
             self.receiver = self.SerialReceiver(self.ser, self.data, self.stop_event)
             self.receiver.start()
-        except SerialException:
-            print("Exception in", __name__, ", ignoring")
-            pass
+        except:
+            print("Exception in receiver")
+
         
     def close(self):
         print(__name__, "Close")
