@@ -34,7 +34,7 @@ class SerialCommunicator:
                     message = message[:-1]
                 message = message + "X"
             self.ser.write(message.encode())
-            //print(__name__, "Transmitted", message.encode())
+            #print(__name__, "Transmitted", message.encode())
 
 
     def __init__(self, data, stop_event,
