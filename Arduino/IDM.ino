@@ -124,7 +124,7 @@ void loop() {
     if (currentTime - previousPollTime >= pollInterval) {
       previousPollTime = currentTime;
       // ++ Faux sensors
-      sensorData.windSpeed = map(analogRead(potPin), 0, 1023, 0, 100);
+      sensorData.windSpeed = map(analogRead(potPin), 0, 1023, 0, 200);
       sensorData.hatchClosed = (digitalRead(startStopPin)) ? false : true;
       sensorData.fanRunning = (digitalRead(hatchSafetyPin)) ? false : true;
       sensorData.pitch = inputData.setPitch;

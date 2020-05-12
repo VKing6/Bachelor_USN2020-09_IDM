@@ -318,7 +318,7 @@ class PageTwo(tk.Frame):
 
         def update_display():
             self.sensor_data = controller.sensor_data.get_data()
-            self.windspeed.set(self.sensor_data["windspeed"])
+            self.windspeed.set(self.sensor_data["windspeed"] / 10)  # Divide by 10 since windspeed is sent as tenths int
             self.temperature.set(self.sensor_data["temperature"])
             self.humidity.set(self.sensor_data["humidity"])
             self.pitch.set(self.sensor_data["pitch"])
