@@ -24,14 +24,8 @@ import idmserial
 import time
 
 
-LARGE_FONT= ("Verdana", 12)
-
 ######################################## initialization  ##################################
 
-db_cursor = ""
-
-
-    
 
 
 ########################### PAGE FUNCTION #######################################+
@@ -76,13 +70,11 @@ class IDMGUI(tk.Tk):
         self.after(2000, self.amend_database)
 
 
-
         self.frames = {}
 
         for F in (StartPage, PageOne, PageTwo, PageThree,PageFour): #antall sider som skal lages i programmet
 
             frame = F(container, self)
-
 
             self.frames[F] = frame
 
@@ -116,21 +108,12 @@ class IDMGUI(tk.Tk):
 
 
 
-
  ##############################  Start page #####################################################
-
-
 
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
-
-       # labelmenu = tk.Label(self, text="Menu",height = 2, width = 16,  bg='blue', fg='white', font=('helvetica', 30, 'bold'))
-        #labelmenu.grid(row = 0 , column = 0)
-
-        #menue = tk.Button(self, text="Menu",height = 2, width = 13,command=lambda: controller.show_frame(StartPage), bg='blue', fg='white', font=('helvetica', 30, 'bold')) #
-       # menue.grid(row = 0 , column = 0)
 
         SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         SpeedAndPitch.grid(row = 0 , column = 0)
@@ -144,12 +127,8 @@ class StartPage(tk.Frame):
         export = tk.Button(self, text="Export data",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         export.grid(row = 0, column = 3)
 
-
         labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
         labelsp33.grid(row = 1 , column = 1)
-
-
-
 
         labelsp3 = tk.Label(self, text="                  ",  font=('helvetica', 30, 'bold'))
         labelsp3.grid(row = 1 , column = 0)
@@ -200,7 +179,7 @@ class PageOne(tk.Frame):
                 new = current - 1
                 self.transmitter.transmit(f"W{new}X")
                 counterFan.set(new)
-        
+
         def stop_fan():
             counterFan.set(0)
             self.transmitter.transmit(f"W0X")
@@ -228,10 +207,6 @@ class PageOne(tk.Frame):
             self.transmitter.transmit(f"P0X")
 
 
-
-
-       # menue = tk.Button(self, text="Menu",height = 2, width = 13,command=lambda: controller.show_frame(StartPage), bg='blue', fg='white', font=('helvetica', 30, 'bold')) #
-        #menue.grid(row = 0 , column = 0)
 
         SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         SpeedAndPitch.grid(row = 0 , column = 0)
@@ -301,7 +276,6 @@ class PageOne(tk.Frame):
 
  ###################################  PAGE 2 Measurements  #####################################################
 
-
 class PageTwo(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -325,7 +299,6 @@ class PageTwo(tk.Frame):
             self.airpressure.set(self.sensor_data["airpressure"])
             self.dragforce.set(self.sensor_data["dragforce"])
             self.liftforce.set(self.sensor_data["liftforce"])
-            #ableAirV.config(text=str(self.ws))
 
             self.after(500, update_display)
 
@@ -403,10 +376,7 @@ class PageTwo(tk.Frame):
         labelfroceV.grid(row = 8, column = 3)
 
 
-
-
  ###################################  PAGE 3 Røykprobe  #####################################################
-
 
 class PageThree(tk.Frame):
 
@@ -447,6 +417,8 @@ class PageThree(tk.Frame):
         bar.grid(row = 5 , column = 0, columnspan =4)
 
 
+###################################  PAGE 4 Eksport  #####################################################
+
 class PageFour(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -470,10 +442,8 @@ class PageFour(tk.Frame):
         labelsp33.grid(row = 1 , column = 1)
 
 
-
         tkvar = tk.StringVar(self)
         tkvar.set('Select start time')
-
 
         tkvar2 = tk.StringVar(self)
         tkvar2.set('Select ')
@@ -481,17 +451,9 @@ class PageFour(tk.Frame):
         labelmen= tk.Label(self, text = "Select start time", font=('helvetica', 15, 'bold'))
         labelmen.grid(row = 1 , column = 1)
 
-        #popupMenu = tk.OptionMenu(self, tkvar, *choices)
-        #popupMenu.config(font=('helvetica', 15, 'bold'))
-
-        #popupMenu.grid(row = 2 , column = 1)
-
-
         cb = ttk.Combobox(self)
         cb.set("Start time")
         cb.grid(row = 2, column = 1)
-
-
 
         cb2 = ttk.Combobox(self)
         cb2.set("End time")
@@ -499,9 +461,6 @@ class PageFour(tk.Frame):
 
         labelmen= tk.Label(self, text = "Select end time", font=('helvetica', 15, 'bold'))
         labelmen.grid(row = 1 , column = 2)
-
-        #popupMenu2 = tk.OptionMenu(self, tkvar2, *choices2)
-        #popupMenu2.grid(row = 2 , column = 2)
 
         def update_times_list():
             c = controller.cursor
@@ -540,13 +499,7 @@ class PageFour(tk.Frame):
         updateliste.grid(row = 4, column = 0)
 
 
-
-
-
-
 def graph_window(database_val,label):
-    
-    
     root = tk.Tk()
     root.wm_title("Embedding in Tk")
     graf_name = tk.Label(root, text= label,   bg='green', fg='white', font=('helvetica', 15, 'bold'))
@@ -560,55 +513,38 @@ def graph_window(database_val,label):
         c1.execute("SELECT time FROM data ORDER BY time DESC LIMIT 1")
         now_time_string = c1.fetchone()[0]
         now_time = datetime.datetime.fromisoformat(now_time_string)
-    
+
         then_time = now_time - datetime.timedelta(seconds=13)
         then_time_string = then_time.isoformat()
 
-
-        
         b = (then_time_string, now_time_string)
 
         c = app.cursor
         c.execute(insert_val,b)
         fetch = c.fetchall()
-        
 
-        
-    
         Xaxes = [x[-5:] for (x, y) in fetch]
         Yaxes = [y for (x, y) in fetch]
-        
-       # a.locator_params(axis='Xaxes', nbins=10)
 
         pltXaxes = np.array(Xaxes)
         pltYaxes = np.array(Yaxes)
-        
-    
+
         a.clear()
         a.plot(pltXaxes,pltYaxes)
-        
-        #ax.plot(pltYaxes)
-        
-    
+
     canvas = FigureCanvasTkAgg(f, master=root)  # A tk.DrawingArea.
 
     canvas.draw()
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-    
-   # toolbar = NavigationToolbar2Tk(canvas, root)
-    #toolbar.update()
 
-    
     def _quit():
-        root.quit()     
+        root.quit()
         root.destroy()
-    
 
-   # spacer = tk.Label(root, text= "")
-    #spacer.pack()
+
     button = tk.Button(master=root, text="Quit", command=_quit, bg='red', fg='white', font=('helvetica', 30, 'bold'))
     button.pack(side=tk.BOTTOM)
-   # time.sleep(10)
+
     root.ani = animation.FuncAnimation(f,animate, interval=1000)
 
     root.geometry("800x480+0+0")
@@ -616,9 +552,8 @@ def graph_window(database_val,label):
     root.mainloop()
 
 
-
+# Instantiate main GUI class
 app = IDMGUI()
-
 
 # Remove header and force window to touchscreen
 app.geometry("800x480+0+0")
