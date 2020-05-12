@@ -1,27 +1,26 @@
 #!/usr/bin/env python3
-
+import matplotlib
+matplotlib.use('Agg')
 import tkinter as tk
 from tkinter import filedialog
-from pandas import DataFrame
 import serial
 import numpy as np
-from PIL import Image
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
-from matplotlib import style
 from tkinter import ttk
 import sqlite3
-import os
+import os, sys
 import csv
-from dateutil import parser
 import datetime
 import threading
+import time
+sys.path.append("/home/pi/Projects/IDM/GUI/")
 import dataobject
 import idmserial
-import time
+from PIL import Image,ImageTk
+
 
 
 ######################################## initialization  ##################################
@@ -67,7 +66,7 @@ class IDMGUI(tk.Tk):
         self.comm = idmserial.SerialCommunicator(self.sensor_data, self.stop_receiver_event)
 
         #  Start database write loop
-        self.after(2000, self.amend_database)
+        self._afterjob = self.after(2000, self.amend_database)
 
 
         self.frames = {}
@@ -104,7 +103,7 @@ class IDMGUI(tk.Tk):
                     (d["timestring"], d["windspeed"], d["temperature"], d["humidity"],
                     d["pitch"], d["airpressure"], d["dragforce"], d["liftforce"]))
             self.database.commit()
-        self.after(1000, self.amend_database)
+        self._afterjob = self.after(1000, self.amend_database)
 
 
     def power_shutdown(self):
@@ -112,8 +111,10 @@ class IDMGUI(tk.Tk):
         Stop the IDM program and Shut down the IDM
         """
         self.comm.close_serial()
-        #os.system("sudo shutdown +1")
-        os.system("sudo shutdown -r +1")
+        self.after_cancel(self._afterjob)
+        #os.system("sudo shutdown now")
+        #os.system("sudo shutdown -r now")
+        sys.exit(0)
 
 
  ##############################  Start page #####################################################
@@ -311,6 +312,10 @@ class PageTwo(tk.Frame):
             self.after(500, update_display)
 
         self.after(0, update_display)
+        
+        
+       
+        
 
 
 
