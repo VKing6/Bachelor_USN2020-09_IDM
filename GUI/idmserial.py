@@ -60,7 +60,7 @@ class SerialCommunicator:
             print("Exception in receiver")
 
         
-    def close(self):
+    def close_serial(self):
         print(__name__, "Close")
         self.stop_event.set()
         self.receiver.join()

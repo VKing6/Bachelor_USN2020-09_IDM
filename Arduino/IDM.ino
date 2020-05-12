@@ -161,21 +161,16 @@ void loop() {
           case 'W': case 'w':
             inputString.remove(0,1);
             inputString.remove(inputString.length());
-            //Serial.println(inputString);
             inputData.setWindSpeed = inputString.toInt();
             break;
           case 'P': case 'p':
             inputString.remove(0,1);
             inputString.remove(inputString.length());
-            //Serial.println(inputString);
             inputData.setPitch = inputString.toInt();
             break;
           default:
-            //Serial.print("D3");
             break;
         }
-        //Serial.print("ID:");Serial.print(inputData.setWindSpeed);
-        //Serial.print("|");Serial.println(inputData.setPitch);
         inputString = "";
         stringComplete = false;
     }
@@ -189,12 +184,12 @@ void serialEvent() {
     char inChar = (char)Serial.read();
     // add it to the inputString:
     if (inChar != '\n') {
-      inputString += inChar;
+        inputString += inChar;
     }
     // if the incoming character is a newline, set a flag so the main loop can
     // do something about it:
     if (inChar == 'X') {
-      stringComplete = true;
+        stringComplete = true;
     }
   }
 }

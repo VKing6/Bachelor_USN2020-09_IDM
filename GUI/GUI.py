@@ -36,7 +36,7 @@ db_cursor = ""
 
 ########################### PAGE FUNCTION #######################################+
 
-class IDM_app(tk.Tk):
+class IDMGUI(tk.Tk):
 
     def __init__(self, *args, **kwargs):
 
@@ -187,21 +187,21 @@ class PageOne(tk.Frame):
 
         counterFan = tk.IntVar()
         maxFan, minFan = 100, 0
-        def increaseFan():
+        def increase_fan():
             current = counterFan.get()
             if current < maxFan:
                 new = current + 1
                 self.transmitter.transmit(f"W{new}X")
                 counterFan.set(new)
 
-        def decreaseFan():
+        def decrease_fan():
             current = counterFan.get()
             if current > minFan:
                 new = current - 1
                 self.transmitter.transmit(f"W{new}X")
                 counterFan.set(new)
         
-        def StopFan():
+        def stop_fan():
             counterFan.set(0)
             self.transmitter.transmit(f"W0X")
 
@@ -209,21 +209,21 @@ class PageOne(tk.Frame):
         counterPitch = tk.IntVar()
         maxPitch, minPitch = 10, -10
 
-        def increasePitch():
+        def increase_pitch():
             current = counterPitch.get()
             if current < maxPitch:
                 new = current + 1
                 self.transmitter.transmit(f"P{new}X")
                 counterPitch.set(new)
 
-        def decreasePitch():
+        def decrease_pitch():
             current = counterPitch.get()
             if current > minPitch:
                 new = current - 1
                 self.transmitter.transmit(f"P{new}X")
                 counterPitch.set(new)
 
-        def ResetPitch():
+        def reset_pitch():
             counterPitch.set(0)
             self.transmitter.transmit(f"P0X")
 
@@ -257,12 +257,12 @@ class PageOne(tk.Frame):
         spacer3.grid(row = 3 , column = 0)
 
 
-        lableSpeed = tk.Label(self, text=" Speed ",height = 1,     font=('helvetica', 25, 'bold'))
-        lableSpeed.grid(row = 4 , column =1)
+        labelSpeed = tk.Label(self, text=" Speed ",height = 1,     font=('helvetica', 25, 'bold'))
+        labelSpeed.grid(row = 4 , column =1)
 
 
-        lablepitch = tk.Label(self, text="  Pitch  ",height = 1,   font=('helvetica', 25, 'bold'))
-        lablepitch.grid(row = 4 , column =2)
+        labelpitch = tk.Label(self, text="  Pitch  ",height = 1,   font=('helvetica', 25, 'bold'))
+        labelpitch.grid(row = 4 , column =2)
 
 
         labelspeedinc = tk.Label(self, textvariable = counterFan, bg = "lightgrey", width = 5, font=('helvetica', 25, 'bold'))
@@ -272,27 +272,27 @@ class PageOne(tk.Frame):
         pitchinc.grid(row = 5 , column =2)
 
 
-        Speedinc = tk.Button(self, text="Increase",command=increaseFan, bg='cyan', fg='black',height = 2 , width =10, font=('helvetica', 20, 'bold')) #
+        Speedinc = tk.Button(self, text="Increase",command=increase_fan, bg='cyan', fg='black',height = 2 , width =10, font=('helvetica', 20, 'bold')) #
         Speedinc.grid(row = 6 , column = 1)
 
-        Speeddec = tk.Button(self, text="Decrease",command=decreaseFan, bg='yellow', fg='black',height = 2 , width =10, font=('helvetica', 20, 'bold')) #
+        Speeddec = tk.Button(self, text="Decrease",command=decrease_fan, bg='yellow', fg='black',height = 2 , width =10, font=('helvetica', 20, 'bold')) #
         Speeddec.grid(row = 7 , column = 1)
 
 
-        pitchinc = tk.Button(self, text="Increase",command=increasePitch, bg='cyan', fg='black', height = 2 , width =10,font=('helvetica', 20, 'bold')) #
+        pitchinc = tk.Button(self, text="Increase",command=increase_pitch, bg='cyan', fg='black', height = 2 , width =10,font=('helvetica', 20, 'bold')) #
         pitchinc.grid(row = 6 , column = 2)
 
-        pitchdec = tk.Button(self, text="Decrease",command=decreasePitch, bg='yellow', fg='black',height = 2 , width =10, font=('helvetica', 20, 'bold')) #
+        pitchdec = tk.Button(self, text="Decrease",command=decrease_pitch, bg='yellow', fg='black',height = 2 , width =10, font=('helvetica', 20, 'bold')) #
         pitchdec.grid(row = 7, column = 2)
 
 
-        Stopbtn = tk.Button(self, text="STOP FAN",command=StopFan,height = 2 , width =15, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
+        Stopbtn = tk.Button(self, text="STOP FAN",command=stop_fan,height = 2 , width =15, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
         Stopbtn.grid(row = 5, column = 0)
 
         spacer5 = tk.Label(self, text="")
         spacer5.grid(row = 6 , column = 0)
 
-        resetpitch = tk.Button(self, text="Reset pitch",command=ResetPitch,height = 2 , width =15, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
+        resetpitch = tk.Button(self, text="Reset pitch",command=reset_pitch,height = 2 , width =15, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
         resetpitch.grid(row = 7 , column = 0)
 
         spacer6 = tk.Label(self, text="")
@@ -360,8 +360,8 @@ class PageTwo(tk.Frame):
 
         AirVelocity = tk.Button(self, text="Air Velocity",command=lambda: graph_window("SELECT time, windspeed FROM data WHERE time BETWEEN ? AND ?", "windspeed"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         AirVelocity.grid(row = 4, column = 0)
-        lableAirV = tk.Label(self, text="5 m/s", textvariable = self.windspeed, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
-        lableAirV.grid(row = 4, column = 1)
+        labelAirV = tk.Label(self, text="5 m/s", textvariable = self.windspeed, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
+        labelAirV.grid(row = 4, column = 1)
 
 
         spacer4 = tk.Label(self, text="")
@@ -369,8 +369,8 @@ class PageTwo(tk.Frame):
 
         Airtemp = tk.Button(self, text="Air Temprature",command=lambda: graph_window("SELECT time, temperature FROM data WHERE time BETWEEN ? AND ?","Temperature"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         Airtemp.grid(row = 6, column = 0)
-        labletemp = tk.Label(self, textvariable = self.temperature ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
-        labletemp.grid(row = 6, column = 1)
+        labeltemp = tk.Label(self, textvariable = self.temperature ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
+        labeltemp.grid(row = 6, column = 1)
 
 
         spacer5 = tk.Label(self, text="")
@@ -378,29 +378,29 @@ class PageTwo(tk.Frame):
 
         Airhum = tk.Button(self, text="Air Humidity",command=lambda: graph_window("SELECT time, humidity FROM data WHERE time BETWEEN ? AND ?","Humidity"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         Airhum.grid(row = 8, column = 0)
-        lableAirhum = tk.Label(self, text="1500", textvariable=self.humidity, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
-        lableAirhum.grid(row = 8, column = 1)
+        labelAirhum = tk.Label(self, text="1500", textvariable=self.humidity, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
+        labelAirhum.grid(row = 8, column = 1)
 
 
 
 
         Airpress = tk.Button(self, text="Air pressure",command=lambda: graph_window("SELECT time, airpressure FROM data WHERE time BETWEEN ? AND ?","Airpressure"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         Airpress.grid(row = 4, column = 2)
-        lableAirpress = tk.Label(self, text="15 kg/m3", textvariable=self.airpressure, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
-        lableAirpress.grid(row = 4, column = 3)
+        labelAirpress = tk.Label(self, text="15 kg/m3", textvariable=self.airpressure, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
+        labelAirpress.grid(row = 4, column = 3)
 
 
 
         forceH = tk.Button(self, text="Drag force",command=lambda: graph_window("SELECT time, dragforce FROM data WHERE time BETWEEN ? AND ?","Dragforce"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         forceH.grid(row = 6, column = 2)
-        lableforceH = tk.Label(self, text="2 N", textvariable=self.dragforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
-        lableforceH.grid(row = 6, column = 3)
+        labelforceH = tk.Label(self, text="2 N", textvariable=self.dragforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
+        labelforceH.grid(row = 6, column = 3)
 
 
         froceV = tk.Button(self, text="Lift force",command=lambda: graph_window("SELECT time, liftforce FROM data WHERE time BETWEEN ? AND ?","Liftforce"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         froceV.grid(row = 8, column = 2)
-        lablefroceV = tk.Label(self, text="15 N", textvariable=self.liftforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
-        lablefroceV.grid(row = 8, column = 3)
+        labelfroceV = tk.Label(self, text="15 N", textvariable=self.liftforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
+        labelfroceV.grid(row = 8, column = 3)
 
 
 
@@ -478,8 +478,8 @@ class PageFour(tk.Frame):
         tkvar2 = tk.StringVar(self)
         tkvar2.set('Select ')
 
-        lablemen= tk.Label(self, text = "Select start time", font=('helvetica', 15, 'bold'))
-        lablemen.grid(row = 1 , column = 1)
+        labelmen= tk.Label(self, text = "Select start time", font=('helvetica', 15, 'bold'))
+        labelmen.grid(row = 1 , column = 1)
 
         #popupMenu = tk.OptionMenu(self, tkvar, *choices)
         #popupMenu.config(font=('helvetica', 15, 'bold'))
@@ -497,8 +497,8 @@ class PageFour(tk.Frame):
         cb2.set("End time")
         cb2.grid(row = 2, column = 2)
 
-        lablemen= tk.Label(self, text = "Select end time", font=('helvetica', 15, 'bold'))
-        lablemen.grid(row = 1 , column = 2)
+        labelmen= tk.Label(self, text = "Select end time", font=('helvetica', 15, 'bold'))
+        labelmen.grid(row = 1 , column = 2)
 
         #popupMenu2 = tk.OptionMenu(self, tkvar2, *choices2)
         #popupMenu2.grid(row = 2 , column = 2)
@@ -533,8 +533,8 @@ class PageFour(tk.Frame):
         export2.grid(row = 2, column = 0)
 
 
-        lablespacer= tk.Label(self, text = "", font=('helvetica', 20, 'bold'))
-        lablespacer.grid(row = 3, column = 0)
+        labelspacer= tk.Label(self, text = "", font=('helvetica', 20, 'bold'))
+        labelspacer.grid(row = 3, column = 0)
 
         updateliste = tk.Button(self, text="Update list ",height = 2, width = 10,command=update_times_list, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
         updateliste.grid(row = 4, column = 0)
@@ -544,12 +544,12 @@ class PageFour(tk.Frame):
 
 
 
-def graph_window(database_val,lable):
+def graph_window(database_val,label):
     
     
     root = tk.Tk()
     root.wm_title("Embedding in Tk")
-    graf_name = tk.Label(root, text= lable,   bg='green', fg='white', font=('helvetica', 15, 'bold'))
+    graf_name = tk.Label(root, text= label,   bg='green', fg='white', font=('helvetica', 15, 'bold'))
     graf_name.pack(side=tk.TOP)
     f = Figure(figsize=(5,4), dpi=100)
     a = f.add_subplot(111)
@@ -617,11 +617,7 @@ def graph_window(database_val,lable):
 
 
 
-
-
-app = IDM_app()
-
-
+app = IDMGUI()
 
 
 # Remove header and force window to touchscreen
@@ -634,4 +630,4 @@ app.update_idletasks()
 app.mainloop()
 
 # Shut down the communicator thread when the GUI closes
-app.comm.close()
+app.comm.close_serial()
