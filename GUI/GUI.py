@@ -22,6 +22,7 @@ import threading
 import dataobject
 import idmserial
 import time
+from PIL import Image,ImageTk
 
 
 ######################################## initialization  ##################################
@@ -289,6 +290,15 @@ class PageTwo(tk.Frame):
         self.airpressure = tk.IntVar()
         self.dragforce   = tk.IntVar()
         self.liftforce   = tk.IntVar()
+        
+        
+        windspeed_unit = tk.StringVar()
+        temperature_unit = tk.StringVar()
+        #humidity_unit = tk.StringVar()
+        pitch_unit = tk.StringVar()
+        airpressure_unit = tk.StringVar()
+        dragforce_unit = tk.StringVar()
+        liftforce_unit = tk.StringVar()
 
         def update_display():
             self.sensor_data = controller.sensor_data.get_data()
@@ -299,6 +309,14 @@ class PageTwo(tk.Frame):
             self.airpressure.set(self.sensor_data["airpressure"])
             self.dragforce.set(self.sensor_data["dragforce"])
             self.liftforce.set(self.sensor_data["liftforce"])
+            
+            windspeed_unit.set(str(self.windspeed.get()) + ' m/s')
+            temperature_unit.set(str(self.temperature.get()) + ' C')
+            #humidity_unit.set(str(self.humidity.get()) + ' m/s')
+            pitch_unit.set(str(self.pitch.get()) + ' Degrees')
+            airpressure_unit.set(str(self.airpressure.get()) + ' psi')
+            dragforce_unit.set(str(self.dragforce.get()) + ' N')
+            liftforce_unit.set(str(self.liftforce.get()) + ' N')
 
             self.after(500, update_display)
 
@@ -331,25 +349,26 @@ class PageTwo(tk.Frame):
 
 
 
-        AirVelocity = tk.Button(self, text="Air Velocity",command=lambda: graph_window("SELECT time, windspeed FROM data WHERE time BETWEEN ? AND ?", "windspeed"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
+        AirVelocity = tk.Button(self, text="Air Velocity",command=lambda: graph_window("SELECT time, windspeed FROM data WHERE time BETWEEN ? AND ?", "windspeed", "m/s"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         AirVelocity.grid(row = 4, column = 0)
-        labelAirV = tk.Label(self, text="5 m/s", textvariable = self.windspeed, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
+        labelAirV = tk.Label(self, textvariable = windspeed_unit, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         labelAirV.grid(row = 4, column = 1)
+
 
 
         spacer4 = tk.Label(self, text="")
         spacer4.grid(row = 5 , column = 0)
 
-        Airtemp = tk.Button(self, text="Air Temprature",command=lambda: graph_window("SELECT time, temperature FROM data WHERE time BETWEEN ? AND ?","Temperature"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
+        Airtemp = tk.Button(self, text="Air Temprature",command=lambda: graph_window("SELECT time, temperature FROM data WHERE time BETWEEN ? AND ?","Temperature","Celsius"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         Airtemp.grid(row = 6, column = 0)
-        labeltemp = tk.Label(self, textvariable = self.temperature ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
+        labeltemp = tk.Label(self, textvariable = temperature_unit ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         labeltemp.grid(row = 6, column = 1)
 
 
         spacer5 = tk.Label(self, text="")
         spacer5.grid(row = 7 , column = 0)
 
-        Airhum = tk.Button(self, text="Air Humidity",command=lambda: graph_window("SELECT time, humidity FROM data WHERE time BETWEEN ? AND ?","Humidity"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
+        Airhum = tk.Button(self, text="Air Humidity",command=lambda: graph_window("SELECT time, humidity FROM data WHERE time BETWEEN ? AND ?","Humidity","percent"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         Airhum.grid(row = 8, column = 0)
         labelAirhum = tk.Label(self, text="1500", textvariable=self.humidity, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         labelAirhum.grid(row = 8, column = 1)
@@ -357,22 +376,22 @@ class PageTwo(tk.Frame):
 
 
 
-        Airpress = tk.Button(self, text="Air pressure",command=lambda: graph_window("SELECT time, airpressure FROM data WHERE time BETWEEN ? AND ?","Airpressure"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
+        Airpress = tk.Button(self, text="Air pressure",command=lambda: graph_window("SELECT time, airpressure FROM data WHERE time BETWEEN ? AND ?","Airpressure","psi"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         Airpress.grid(row = 4, column = 2)
-        labelAirpress = tk.Label(self, text="15 kg/m3", textvariable=self.airpressure, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
+        labelAirpress = tk.Label(self, textvariable=airpressure_unit, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         labelAirpress.grid(row = 4, column = 3)
 
 
 
-        forceH = tk.Button(self, text="Drag force",command=lambda: graph_window("SELECT time, dragforce FROM data WHERE time BETWEEN ? AND ?","Dragforce"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
+        forceH = tk.Button(self, text="Drag force",command=lambda: graph_window("SELECT time, dragforce FROM data WHERE time BETWEEN ? AND ?","Dragforce", "Newton"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         forceH.grid(row = 6, column = 2)
-        labelforceH = tk.Label(self, text="2 N", textvariable=self.dragforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
+        labelforceH = tk.Label(self, text="2 N", textvariable=dragforce_unit, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         labelforceH.grid(row = 6, column = 3)
 
 
-        froceV = tk.Button(self, text="Lift force",command=lambda: graph_window("SELECT time, liftforce FROM data WHERE time BETWEEN ? AND ?","Liftforce"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
+        froceV = tk.Button(self, text="Lift force",command=lambda: graph_window("SELECT time, liftforce FROM data WHERE time BETWEEN ? AND ?","Liftforce", "Newton"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         froceV.grid(row = 8, column = 2)
-        labelfroceV = tk.Label(self, text="15 N", textvariable=self.liftforce, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
+        labelfroceV = tk.Label(self, text="15 N", textvariable=liftforce_unit, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         labelfroceV.grid(row = 8, column = 3)
 
 
@@ -499,14 +518,20 @@ class PageFour(tk.Frame):
         updateliste.grid(row = 4, column = 0)
 
 
-def graph_window(database_val,label):
+def graph_window(database_val,label,yaxislab):
     root = tk.Tk()
     root.wm_title("Embedding in Tk")
     graf_name = tk.Label(root, text= label,   bg='green', fg='white', font=('helvetica', 15, 'bold'))
     graf_name.pack(side=tk.TOP)
+
+    #graf_Taxis = tk.Label(root, text= "this measures in m/s y axis",   bg='red', fg='white', font=('helvetica', 15, 'bold'))
+    #graf_Taxis.pack()
+    
+    
     f = Figure(figsize=(5,4), dpi=100)
     a = f.add_subplot(111)
     insert_val =database_val
+    f.ylabel = 'test'
 
     def animate(i):
         c1 = app.cursor
@@ -531,6 +556,9 @@ def graph_window(database_val,label):
 
         a.clear()
         a.plot(pltXaxes,pltYaxes)
+        a.set_ylabel(yaxislab)
+        a.set_xlabel("Time")
+
 
     canvas = FigureCanvasTkAgg(f, master=root)  # A tk.DrawingArea.
 
