@@ -107,6 +107,14 @@ class IDMGUI(tk.Tk):
         self.after(1000, self.amend_database)
 
 
+    def power_shutdown(self):
+        """
+        Stop the IDM program and Shut down the IDM
+        """
+        self.comm.close_serial()
+        #os.system("sudo shutdown +1")
+        os.system("sudo shutdown -r +1")
+
 
  ##############################  Start page #####################################################
 
@@ -437,7 +445,6 @@ class PageFour(tk.Frame):
         export = tk.Button(self, text="Export data",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         export.grid(row = 0, column = 3)
 
-
         labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
         labelsp33.grid(row = 1 , column = 1)
 
@@ -497,6 +504,9 @@ class PageFour(tk.Frame):
 
         updateliste = tk.Button(self, text="Update list ",height = 2, width = 10,command=update_times_list, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
         updateliste.grid(row = 4, column = 0)
+
+        poweroff = tk.Button(self, text="Power off ",height = 2, width = 10, command=controller.power_shutdown, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
+        poweroff.grid(row = 4, column = 3)
 
 
 def graph_window(database_val,label):
