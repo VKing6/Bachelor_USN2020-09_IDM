@@ -44,15 +44,16 @@ class IDMGUI(tk.Tk):
 
 
         #  Make a new database file for each month
-        self.db_month = datetime.date.today().isoformat()[:-3]
+        db_month = datetime.date.today().isoformat()[:-3]
+        db_folder = f"/usr/db/idm/"
         #  Don't store more than 6 months of data. Delete the oldest database file when it turns over.
-        dbs = [f for f in os.listdir(".") if os.path.isfile(f) and f[-3:] == ".db"]
+        dbs = [f for f in os.listdir(db_folder) if os.path.isfile(f) and f[-3:] == ".db"]
         if len(dbs) > 5:
             f = dbs.pop(0)
-            if f != f"data_{self.db_month}.db":
+            if f != f"data_{db_month}.db":
                 os.remove(dbs[0])
         #  Connect to database
-        self.database = sqlite3.connect(f"data_{self.db_month}.db")
+        self.database = sqlite3.connect(db_folder + f"data_{db_month}.db")
         self.cursor = self.database.cursor()
         #  Check if data table exists in database and create it if not
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS data
