@@ -113,9 +113,7 @@ class IDMGUI(tk.Tk):
         """
         self.comm.close_serial()
         self.after_cancel(self._afterjob)
-        #os.system("sudo shutdown now")
-        #os.system("sudo shutdown -r now")
-        sys.exit(0)
+        os.system("sudo shutdown now")
 
 
  ##############################  Start page #####################################################
@@ -404,11 +402,6 @@ class PageThree(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-
-        #menue = tk.Button(self, text="Menu",height = 2, width = 13,command=lambda: controller.show_frame(StartPage), bg='blue', fg='white', font=('helvetica', 30, 'bold')) #
-       # menue.grid(row = 0 , column = 0)
-
-
         SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         SpeedAndPitch.grid(row = 0 , column = 0)
 
@@ -431,7 +424,6 @@ class PageThree(tk.Frame):
 
         spacer3 = tk.Label(self, text="")
         spacer3.grid(row = 3 , column = 0)
-
 
 
         bar = tk.Scale(self, from_=-200, to=200,orient=tk.HORIZONTAL, length=2000,tickinterval=50, width = 100 ,font=('helvetica', 10, 'bold'))
@@ -493,14 +485,12 @@ class PageFour(tk.Frame):
         update_times_list()
 
         def export_to_csv(startTime=cb.get(), endTime=cb2.get()):
-            #startTime, endTime = cb.get(), cb2.get()
             if (startTime>=endTime):
                 tk.messagebox.showerror("Error", "Start time can not be less or equal to end time")
             else:
                 #export_file_path = filedialog.asksaveasfilename(defaultextension='.csv')
                 export_file_path = f"/var/www/idm.com/public_html/{endTime}.csv"
 
-                #print ("Exporting data into CSV............")
                 cursor = controller.cursor
                 q = (startTime, endTime)
                 cursor.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q)
@@ -514,20 +504,20 @@ class PageFour(tk.Frame):
             session_end_time = datetime.datetime.now().isoformat()[:19]
             export_to_csv(self.session_start_time, session_end_time)
 
-        export_selected = tk.Button(self, text="Export selected ",height = 2, width = 10,command=export_to_csv, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
+        export_selected = tk.Button(self, text="Export\nselected",height = 2, width = 10,command=export_to_csv, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
         export_selected.grid(row = 2, column = 0)
 
-        export_session_button = tk.Button(self, text="Export session",height = 2, width = 10,command=export_session, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
-        export_session_button.grid(row = 5, column = 0)
+        updateliste = tk.Button(self, text="Update list ",height = 2, width = 10,command=update_times_list, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
+        updateliste.grid(row = 3, column = 0)
 
 
         labelspacer= tk.Label(self, text = "", font=('helvetica', 20, 'bold'))
-        labelspacer.grid(row = 3, column = 0)
+        labelspacer.grid(row = 43, column = 0)
 
-        updateliste = tk.Button(self, text="Update list ",height = 2, width = 10,command=update_times_list, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
-        updateliste.grid(row = 4, column = 0)
+        export_session_button = tk.Button(self, text="Export\nsession", height = 2, width = 10,command=export_session, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
+        export_session_button.grid(row = 5, column = 0)
 
-        poweroff = tk.Button(self, text="Power off ",height = 2, width = 10, command=controller.power_shutdown, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
+        poweroff = tk.Button(self, text="Power off ", height = 2, width = 10, command=controller.power_shutdown, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
         poweroff.grid(row = 4, column = 3)
 
 
