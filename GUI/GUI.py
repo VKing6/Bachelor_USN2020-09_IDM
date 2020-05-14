@@ -444,6 +444,8 @@ class PageFour(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        self.session_start_time = datetime.datetime.now().isoformat()[:19]
+
 
         SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         SpeedAndPitch.grid(row = 0 , column = 0)
@@ -489,8 +491,8 @@ class PageFour(tk.Frame):
             cb2['values'] = cblist
         update_times_list()
 
-        def export_to_csv():
-            startTime, endTime = cb.get(), cb2.get()
+        def export_to_csv(startTime=cb.get(), endTime=cb2.get()):
+            #startTime, endTime = cb.get(), cb2.get()
             if (startTime>=endTime):
                 tk.messagebox.showerror("Error", "Start time can not be less or equal to end time")
             else:
@@ -507,8 +509,15 @@ class PageFour(tk.Frame):
                     csv_writer.writerow([i[0] for i in cursor.description])
                     csv_writer.writerows(cursor)
 
-        export2 = tk.Button(self, text="Export ",height = 2, width = 10,command=export_to_csv, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
-        export2.grid(row = 2, column = 0)
+        def export_session():
+            session_end_time = datetime.datetime.now().isoformat()[:19]
+            export_to_csv(self.session_start_time, session_end_time)
+
+        export_selected = tk.Button(self, text="Export selected ",height = 2, width = 10,command=export_to_csv, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
+        export_selected.grid(row = 2, column = 0)
+
+        export_session_button = tk.Button(self, text="Export session",height = 2, width = 10,command=export_session, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
+        export_session_button.grid(row = 5, column = 0)
 
 
         labelspacer= tk.Label(self, text = "", font=('helvetica', 20, 'bold'))
