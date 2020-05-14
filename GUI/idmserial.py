@@ -14,13 +14,13 @@ class SerialCommunicator:
             threading.Thread.__init__(self)
 
         def run(self):
-            print(__name__, "Running")
+            #print(__name__, "Running")
             while not self.stop_event.is_set():
                 in_data = self.ser.readline()
                 if len(in_data) > 0:
                     self.data.parse_datastring(in_data)
                     #print(self.data.get_data())  # Debug
-            print(__name__, "Stopping")
+            #print(__name__, "Stopping")
 
 
     class SerialTransmitter:
@@ -39,7 +39,7 @@ class SerialCommunicator:
 
     def __init__(self, data, stop_event,
                  port='/dev/ttyACM0', rate=57600, timeout=1):
-        print(__name__, "Init")
+        #print(__name__, "Init")
         self.data = data
         self.stop_event = stop_event
         
@@ -61,7 +61,7 @@ class SerialCommunicator:
 
         
     def close_serial(self):
-        print(__name__, "Close")
+        #print(__name__, "Close")
         self.stop_event.set()
         self.receiver.join()
         self.ser.close()
