@@ -133,10 +133,10 @@ void loop() {
     }
 
     if (currentTime - previousDHT11pollTime >= DHT11pollInterval) {
-      previousDHT11pollTime = currentTime;
-      DHT.read11(dht11pin);
-      sensorData.temperature = DHT.temperature;
-      sensorData.humidity = DHT.humidity;
+        previousDHT11pollTime = currentTime;
+        DHT.read11(dht11pin);
+        sensorData.temperature = DHT.temperature;
+        sensorData.humidity = DHT.humidity;
     }
     
     // Transmit every transmitInterval
