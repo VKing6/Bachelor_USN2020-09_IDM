@@ -428,6 +428,10 @@ class PageThree(tk.Frame):
 
         bar = tk.Scale(self, from_=-200, to=200,orient=tk.HORIZONTAL, length=2000,tickinterval=50, width = 100 ,font=('helvetica', 10, 'bold'))
         bar.grid(row = 5 , column = 0, columnspan =4)
+        
+        labeinstructions = tk.Label(self, text="- Left    Right +",  fg='black', font=('helvetica', 20, 'bold'))
+        labeinstructions.grid(row = 6 , column =0, columnspan = 5)
+
 
 
 ###################################  PAGE 4 Eksport  #####################################################
@@ -484,7 +488,10 @@ class PageFour(tk.Frame):
             cb2['values'] = cblist
         update_times_list()
 
-        def export_to_csv(startTime=cb.get(), endTime=cb2.get()):
+        def export_to_csv(startTime=None, endTime=None):
+            if startTime is None or endTime is None:
+                startTime = cb.get()
+                endTime = cb2.get()
             if (startTime>=endTime):
                 tk.messagebox.showerror("Error", "Start time can not be less or equal to end time")
             else:
@@ -503,7 +510,13 @@ class PageFour(tk.Frame):
         def export_session():
             session_end_time = datetime.datetime.now().isoformat()[:19]
             export_to_csv(self.session_start_time, session_end_time)
+            
 
+        
+
+        def export_session_refresh():
+            self.session_start_time = datetime.datetime.now().isoformat()[:19]
+            
         export_selected = tk.Button(self, text="Export\nselected",height = 2, width = 10,command=export_to_csv, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
         export_selected.grid(row = 2, column = 0)
 
@@ -517,13 +530,17 @@ class PageFour(tk.Frame):
         export_session_button = tk.Button(self, text="Export\nsession", height = 2, width = 10,command=export_session, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
         export_session_button.grid(row = 5, column = 0)
 
+
+        Clear_session_button = tk.Button(self, text="Clear\nsession", height = 2, width = 10,command=export_session_refresh, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
+        Clear_session_button.grid(row = 5, column = 1)
+
         poweroff = tk.Button(self, text="Power off ", height = 2, width = 10, command=controller.power_shutdown, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
         poweroff.grid(row = 4, column = 3)
 
 
 def graph_window(database_val,label,yaxislab):
     root = tk.Tk()
-    root.wm_title("Embedding in Tk")
+    root.wm_title("Embedding graf in new Tk window")
     graf_name = tk.Label(root, text= label,   bg='green', fg='white', font=('helvetica', 15, 'bold'))
     graf_name.pack(side=tk.TOP)
     f = Figure(figsize=(5,4), dpi=100)
