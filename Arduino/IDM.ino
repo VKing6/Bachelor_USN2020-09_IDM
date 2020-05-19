@@ -1,11 +1,13 @@
 // #define DEBUG
 
 #include <ThreeWire.h>
-#include <RtcDS1302.h>
+#include <RtcDS1302.h> // https://github.com/Makuna/Rtc
 #include <dht.h>
+#include <PID_v1.h> // PID library
 
 #include "boolToByte.h"
 
+// Data structs
 struct SensorData {
     int windSpeed;
     int temperature;
@@ -23,14 +25,34 @@ struct InputData {
     int setPitch;
 };
 
-dht DHT;
+struct SensorData sensorData;
+struct InputData inputData;
 
 // ++ Sensors
 const int startStopPin = 52;
 const int hatchSafetyPin = 51;
 const int potPin = A7;
+
+// DHT11 temperature and humidity sensor
 const int dht11pin = 3;
+dht DHT;
+
+// Differential pressure sensor
+const int dpSensorPin = A0;
+float rho = 1.204; // Air density
+int offset = 0;
+int offset_size = 10;
+int veloc_mean_size = 20;
+int zero_span = 2;
 // -- Sensors
+
+
+// PID controller variables
+const int PIDoutputPin = 8;
+double Setpoint, Input, Output;  // PID Process parameters
+double Kp = 30, Ki = 50, Kd = 0;  // PID constants
+PID fanController(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);  // PID controller
+
 
 // Timing variables
 unsigned long previousTransmitTime = 0;
@@ -42,20 +64,19 @@ const unsigned int DHT11pollInterval = 2000;
 unsigned long previousPIDtime = 0;
 const unsigned int PIDinterval = 200;
 
-// Reading test
+// Serial input
 bool stringComplete = false;
 String inputString = "";
 
-char datetimestring[20];
-struct SensorData sensorData;
-struct InputData inputData;
-
+// Real-time clock
 ThreeWire myWire(6,7,5); // IO, SCLK, CE
 RtcDS1302<ThreeWire> Rtc(myWire);
+char datetimestring[20];
 
 void setup() {
     Serial.begin(57600);
 
+    // ++ RTC configuration
     #ifdef DEBUG
     Serial.print("compiled: ");
     Serial.print(__DATE__);
@@ -100,20 +121,31 @@ void setup() {
         Serial.println("RTC is the same as compile time! (not expected but all is fine)");
     }
     #endif // DEBUG
+    // -- RTC configuration
 
-    // ++ Faux sensors
+    // Port initialisation
+    pinMode(dpSensorPin, INPUT);
     pinMode(startStopPin, INPUT_PULLUP);
     pinMode(hatchSafetyPin, INPUT_PULLUP);
+    pinMode(PIDoutputPin, OUTPUT);
 
-    //sensorData.temperature = -2;
-    //sensorData.humidity = -3;
-    //sensorData.pitch = -4;
-    //sensorData.airPressure = -5;
+    // ++ Faux sensors
     sensorData.dragForce = -6;
     sensorData.liftForce = -7;
     // -- Faux sensors
+
+    // Set initial values
     inputData.setWindSpeed = 0;
     inputData.setPitch = 0;
+
+    // DP sensor initialisation
+    for (int ii = 0; ii < offset_size; ii++) {
+        offset += analogRead(A0) - (1023 / 2);
+    }
+    offset /= offset_size;
+
+    // PID initialisation
+    Setpoint = 0; 
 }
 
 void loop() {
