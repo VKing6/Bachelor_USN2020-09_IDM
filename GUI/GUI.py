@@ -141,7 +141,7 @@ class StartPage(tk.Frame):
         labelsp3 = tk.Label(self, text="                  ",  font=('helvetica', 30, 'bold'))
         labelsp3.grid(row = 1 , column = 0)
 
-        labelsp4 = tk.Label(self, text="Welcome to the Windtunnel software ", bg='red', fg='white', font=('helvetica', 30, 'bold'))
+        labelsp4 = tk.Label(self, text="Welcome to the Wind tunnel software ", bg='red', fg='white', font=('helvetica', 30, 'bold'))
         labelsp4.grid(row = 2 , column = 0, columnspan = 4)
 
         Kristian = tk.Label(self, text="Kristian Auestad", font=('helvetica', 30, 'bold'))
