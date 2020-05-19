@@ -502,7 +502,7 @@ class PageFour(tk.Frame):
                 with open(export_file_path, "w") as csv_file:
                     csv_writer = csv.writer(csv_file)
                     csv_writer.writerow([i[0] for i in cursor.description])
-                    csv_writer.writerows(cursor)
+                    csv_writer.writerows(cursor.fetchall())
 
         def export_session():
             session_end_time = datetime.datetime.now().isoformat()[:19]
