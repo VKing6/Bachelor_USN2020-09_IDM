@@ -2,8 +2,8 @@
 
 #include <ThreeWire.h>
 #include <RtcDS1302.h> // https://github.com/Makuna/Rtc
-#include <dht.h>
-#include <PID_v1.h> // PID library
+#include <dht.h>       // https://github.com/adafruit/DHT-sensor-library
+#include <PID_v1.h>    // https://github.com/br3ttb/Arduino-PID-Library/
 
 #include "boolToByte.h"
 
@@ -138,25 +138,29 @@ void setup() {
     inputData.setWindSpeed = 0;
     inputData.setPitch = 0;
 
+    // PID initialisation
+    Setpoint = 0;
+    fanController.SetMode(AUTOMATIC);
+
+    sleep(5000); // Delay DP sensor initialisation
+                 // to make sure fan settles first
+
     // DP sensor initialisation
     for (int ii = 0; ii < offset_size; ii++) {
-        offset += analogRead(A0) - (1023 / 2);
+        offset += analogRead(dpSensorPin) - (1023 / 2);
     }
     offset /= offset_size;
-
-    // PID initialisation
-    Setpoint = 0; 
 }
 
 void loop() {
     unsigned long currentTime = millis();
     
     // Read sensors every pollInterval
-    //// Split into function
     if (currentTime - previousPollTime >= pollInterval) {
       previousPollTime = currentTime;
       // ++ Faux sensors
-      sensorData.windSpeed = map(analogRead(potPin), 0, 1023, 0, 200);
+      // sensorData.windSpeed = map(analogRead(potPin), 0, 1023, 0, 200);
+      sensorData.windSpeed = measureWindSpeed();
       sensorData.hatchClosed = (digitalRead(startStopPin)) ? false : true;
       sensorData.fanRunning = (digitalRead(hatchSafetyPin)) ? false : true;
       sensorData.pitch = inputData.setPitch;
@@ -164,6 +168,13 @@ void loop() {
       // -- Faux sensors
     }
 
+    if (currentTime - previousPIDtime >= PIDinterval) {
+        previousPIDtime = currentTime;
+        fanController.Compute();  // Compute fan speed
+        analogWrite(PIDoutputPin, Output);  // Output fan PWM signal
+    }
+
+    // Read the DHT11 sensor slower because of hardware limitations
     if (currentTime - previousDHT11pollTime >= DHT11pollInterval) {
         previousDHT11pollTime = currentTime;
         DHT.read11(dht11pin);
@@ -171,7 +182,7 @@ void loop() {
         sensorData.humidity = DHT.humidity;
     }
     
-    // Transmit every transmitInterval
+    // Transmit data every transmitInterval
     if (currentTime - previousTransmitTime >= transmitInterval) {
         previousTransmitTime = currentTime;
         RtcDateTime now = Rtc.GetDateTime();
@@ -239,6 +250,28 @@ void transmitData(struct SensorData data, char* datestring) {
     Serial.print(boolToByte(data.hatchClosed, data.fanRunning));
     Serial.println();
 }
+
+int measureWindSpeed() {
+    float adc_avg = 0.0;
+    float veloc = 0.0;
+    for (int ii = 0; ii < veloc_mean_size; ii++) {
+        adc_avg += analogRead(dpSensorPin) - offset;
+    }
+    adc_avg /= veloc_mean_size;
+    // make sure if the ADC reads below 512, then we equate it to a negative velocity
+    if (adc_avg > 512 - zero_span && adc_avg < 512 + zero_span)
+    {
+    }
+    else {
+        if (adc_avg < 512) {
+            veloc = -sqrt((-10000.0 * ((adc_avg / 1023.0) - 0.5)) / rho);
+        } else {
+            veloc = sqrt((10000.0 * ((adc_avg / 1023.0) - 0.5)) / rho);
+        }
+    }
+    return (int)(veloc * 10);  // Velocity is stored as a decimal int
+}
+
 
 #define countof(a) (sizeof(a) / sizeof(a[0]))
 
