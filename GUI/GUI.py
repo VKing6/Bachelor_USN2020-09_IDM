@@ -160,7 +160,8 @@ class StartPage(tk.Frame):
         Havard = tk.Label(self, text="Håvard Gaska ",  font=('helvetica', 30, 'bold'))
         Havard.grid(row = 7, column = 0, columnspan = 4)
 
-
+        Joachim = tk.Label(self, text="Joachim Smørdal ",  font=('helvetica', 30, 'bold'))
+        Joachim.grid(row = 8, column = 0, columnspan = 4)
 
  ##########  PAGE 1 Adjust speed and pitch ##########
 
