@@ -141,26 +141,28 @@ class StartPage(tk.Frame):
         labelsp3 = tk.Label(self, text="                  ",  font=('helvetica', 30, 'bold'))
         labelsp3.grid(row = 1 , column = 0)
 
-        labelsp4 = tk.Label(self, text="Welcome to the Windtunnel software ", bg='red', fg='white', font=('helvetica', 30, 'bold'))
+        labelsp4 = tk.Label(self, text="Welcome to the Wind tunnel software ", bg='red', fg='white', font=('helvetica', 30, 'bold'))
         labelsp4.grid(row = 2 , column = 0, columnspan = 4)
 
-        Kristian = tk.Label(self, text="Kristian Auestad", font=('helvetica', 30, 'bold'))
+        Kristian = tk.Label(self, text="Kristian Auestad", font=('helvetica', 25, 'bold'))
         Kristian.grid(row = 3 , column = 0, columnspan = 4)
 
-        steffen = tk.Label(self, text="Steffen Barskrind",  font=('helvetica', 30, 'bold'))
+        steffen = tk.Label(self, text="Steffen Barskrind",  font=('helvetica', 25, 'bold'))
         steffen.grid(row = 4 , column = 0, columnspan = 4)
 
-        kristoffer = tk.Label(self, text="Kristoffer Andersen ",  font=('helvetica', 30, 'bold'))
+        kristoffer = tk.Label(self, text="Kristoffer Andersen ",  font=('helvetica', 25, 'bold'))
         kristoffer.grid(row = 5 , column = 0, columnspan = 4)
 
-        marisu = tk.Label(self, text="Marius Balsvik ",  font=('helvetica', 30, 'bold'))
+        marisu = tk.Label(self, text="Marius Balsvik ",  font=('helvetica', 25, 'bold'))
         marisu.grid(row = 6 , column = 0, columnspan = 4)
 
 
-        Håvard = tk.Label(self, text="Håvard Gaska ",  font=('helvetica', 30, 'bold'))
+        Håvard = tk.Label(self, text="Håvard Gaska ",  font=('helvetica', 25, 'bold'))
         Håvard.grid(row = 7, column = 0, columnspan = 4)
 
 
+        joachim = tk.Label(self, text="Joachim Haug ",  font=('helvetica', 25, 'bold'))
+        joachim.grid(row = 8, column = 0, columnspan = 4)
 
  ###################################  PAGE 1 Adjust speed and pitch #####################################################
 
@@ -505,15 +507,12 @@ class PageFour(tk.Frame):
                 with open(export_file_path, "w") as csv_file:
                     csv_writer = csv.writer(csv_file)
                     csv_writer.writerow([i[0] for i in cursor.description])
-                    csv_writer.writerows(cursor)
+                    csv_writer.writerows(cursor.fetchall())
 
         def export_session():
             session_end_time = datetime.datetime.now().isoformat()[:19]
             export_to_csv(self.session_start_time, session_end_time)
             
-
-        
-
         def export_session_refresh():
             self.session_start_time = datetime.datetime.now().isoformat()[:19]
             
