@@ -56,6 +56,7 @@ RtcDS1302<ThreeWire> Rtc(myWire);
 void setup() {
     Serial.begin(57600);
 
+    // ++ Real-time clock configuration
     #ifdef DEBUG
     Serial.print("compiled: ");
     Serial.print(__DATE__);
@@ -74,32 +75,44 @@ void setup() {
         // Common Causes:
         //    1) first time you ran and the device wasn't running yet
         //    2) the battery on the device is low or even missing
-
+        #ifdef DEBUG
         Serial.println("RTC lost confidence in the DateTime!");
+        #endif //DEBUG
         Rtc.SetDateTime(compiled);
     }
 
     if (Rtc.GetIsWriteProtected()) {
+        #ifdef DEBUG
         Serial.println("RTC was write protected, enabling writing now");
+        #endif //DEBUG
         Rtc.SetIsWriteProtected(false);
     }
 
     if (!Rtc.GetIsRunning()) {
+        #ifdef DEBUG
         Serial.println("RTC was not actively running, starting now");
+        #endif //DEBUG
         Rtc.SetIsRunning(true);
     }
 
     RtcDateTime now = Rtc.GetDateTime();
-    #ifdef DEBUG
     if (now < compiled) {
+        #ifdef DEBUG
         Serial.println("RTC is older than compile time!  (Updating DateTime)");
+        #endif //DEBUG
         Rtc.SetDateTime(compiled);
-    } else if (now > compiled) {
-        Serial.println("RTC is newer than compile time. (this is expected)");
-    } else if (now == compiled) {
-        Serial.println("RTC is the same as compile time! (not expected but all is fine)");
     }
-    #endif // DEBUG
+    else if (now > compiled) {
+        #ifdef DEBUG
+        Serial.println("RTC is newer than compile time. (this is expected)");
+        #endif //DEBUG
+    }
+    else if (now == compiled) {
+        #ifdef DEBUG
+        Serial.println("RTC is the same as compile time! (not expected but all is fine)");
+        #endif //DEBUG
+    }
+    // -- Real-time clock configuration
 
     // ++ Faux sensors
     pinMode(startStopPin, INPUT_PULLUP);
