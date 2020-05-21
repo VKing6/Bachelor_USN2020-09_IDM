@@ -508,7 +508,7 @@ class PageFour(tk.Frame):
             session_end_time = datetime.datetime.now().isoformat()[:19]
             export_to_csv(self.session_start_time, session_end_time)
 
-        export_selected = tk.Button(self, text="Export\nselected",height = 2, width = 10,command=export_to_csv, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
+        export_selected = tk.Button(self, text="Export\nselected",height = 2, width = 10,command=export_to_csv, bg='red', fg='white', font=('helvetica', 20, 'bold'))
         export_selected.grid(row = 2, column = 0)
 
         updateliste = tk.Button(self, text="Update list ",height = 2, width = 10,command=update_times_list, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
