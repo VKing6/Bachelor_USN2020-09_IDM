@@ -44,7 +44,7 @@ class SerialCommunicator:
         self.stop_event = stop_event
         
         while True:  # Wait for the serial port to connect
-            self.ser = connect_serial(port, rate, timeout)
+            self.ser = self.connect_serial(port, rate, timeout)
             if self.ser is not None:
                 break
 
