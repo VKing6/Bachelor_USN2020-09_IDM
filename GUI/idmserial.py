@@ -43,23 +43,22 @@ class SerialCommunicator:
         self.data = data
         self.stop_event = stop_event
         
-        try:
-            self.ser = serial.Serial(port=port, baudrate=rate, timeout=timeout)
-        except serial.SerialException:
-            print("Exception in serialport")
+        while True:  # Wait for the serial port to connect
+            self.ser = connect_serial(port, rate, timeout)
+            if self.ser is not None:
+                break
 
+        self.transmitter = self.SerialTransmitter(self.ser)
+        self.receiver = self.SerialReceiver(self.ser, self.data,
+                                            self.stop_event)
+        self.receiver.start()
+
+    def connect_serial(self, port, rate, timeout):
         try:
-            self.transmitter = self.SerialTransmitter(self.ser)
+            return serial.Serial(port=port, baudrate=rate, timeout=timeout)
         except:
-            print("Exception in transmitter")
+            return None
 
-        try:
-            self.receiver = self.SerialReceiver(self.ser, self.data, self.stop_event)
-            self.receiver.start()
-        except:
-            print("Exception in receiver")
-
-        
     def close_serial(self):
         #print(__name__, "Close")
         self.stop_event.set()
