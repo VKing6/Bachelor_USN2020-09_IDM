@@ -23,11 +23,11 @@ from PIL import Image,ImageTk
 
 
 
-######################################## initialization  ##################################
+########## initialization  ##########
 
 
 
-########################### PAGE FUNCTION #######################################+
+########## PAGE FUNCTION ##########
 
 class IDMGUI(tk.Tk):
 
@@ -116,7 +116,7 @@ class IDMGUI(tk.Tk):
         os.system("sudo shutdown now")
 
 
- ##############################  Start page #####################################################
+ ##########  Start page ##########
 
 class StartPage(tk.Frame):
 
@@ -141,7 +141,7 @@ class StartPage(tk.Frame):
         labelsp3 = tk.Label(self, text="                  ",  font=('helvetica', 30, 'bold'))
         labelsp3.grid(row = 1 , column = 0)
 
-        labelsp4 = tk.Label(self, text="Welcome to the Wind tunnel software ", bg='red', fg='white', font=('helvetica', 30, 'bold'))
+        labelsp4 = tk.Label(self, text="Welcome to the wind tunnel software ", bg='red', fg='white', font=('helvetica', 30, 'bold'))
         labelsp4.grid(row = 2 , column = 0, columnspan = 4)
 
         Kristian = tk.Label(self, text="Kristian Auestad", font=('helvetica', 25, 'bold'))
@@ -157,15 +157,14 @@ class StartPage(tk.Frame):
         marisu.grid(row = 6 , column = 0, columnspan = 4)
 
 
-        Håvard = tk.Label(self, text="Håvard Gaska ",  font=('helvetica', 25, 'bold'))
-        Håvard.grid(row = 7, column = 0, columnspan = 4)
+        Havard = tk.Label(self, text="Håvard Gaska ",  font=('helvetica', 25, 'bold'))
+        Havard.grid(row = 7, column = 0, columnspan = 4)
 
 
         joachim = tk.Label(self, text="Joachim Haug ",  font=('helvetica', 25, 'bold'))
         joachim.grid(row = 8, column = 0, columnspan = 4)
 
- ###################################  PAGE 1 Adjust speed and pitch #####################################################
-
+ ##########  PAGE 1 Adjust speed and pitch ##########
 
 class PageOne(tk.Frame):
 
@@ -295,7 +294,7 @@ class PageOne(tk.Frame):
         spacer6.grid(row = 8 , column = 0)
 
 
- ###################################  PAGE 2 Measurements  #####################################################
+ ##########  PAGE 2 Measurements  ##########
 
 class PageTwo(tk.Frame):
 
@@ -312,6 +311,10 @@ class PageTwo(tk.Frame):
         self.liftforce   = tk.StringVar()
 
         def update_display():
+            """
+            Update measurement display with values from sensor_data object
+            Runs every 500ms
+            """
             self.sensor_data = controller.sensor_data.get_data()
             self.windspeed.set(str(self.sensor_data["windspeed"] / 10) + " m/s")  # Divide by 10 since windspeed is sent as tenths int
             self.temperature.set(str(self.sensor_data["temperature"]) + " C")
@@ -356,8 +359,6 @@ class PageTwo(tk.Frame):
         labelAirV = tk.Label(self, textvariable = self.windspeed, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         labelAirV.grid(row = 4, column = 1)
 
-
-
         spacer4 = tk.Label(self, text="")
         spacer4.grid(row = 5 , column = 0)
 
@@ -366,9 +367,9 @@ class PageTwo(tk.Frame):
         labeltemp = tk.Label(self, textvariable = self.temperature ,height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         labeltemp.grid(row = 6, column = 1)
 
-
         spacer5 = tk.Label(self, text="")
         spacer5.grid(row = 7 , column = 0)
+
 
         Airhum = tk.Button(self, text="Air Humidity",command=lambda: graph_window("SELECT time, humidity FROM data WHERE time BETWEEN ? AND ?","Humidity","percent"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         Airhum.grid(row = 8, column = 0)
@@ -376,13 +377,10 @@ class PageTwo(tk.Frame):
         labelAirhum.grid(row = 8, column = 1)
 
 
-
-
         Airpress = tk.Button(self, text="Air pressure",command=lambda: graph_window("SELECT time, airpressure FROM data WHERE time BETWEEN ? AND ?","Airpressure","Pascal"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
         Airpress.grid(row = 4, column = 2)
         labelAirpress = tk.Label(self, textvariable=self.airpressure, height = 2 , width =15, bg='lightgrey', fg='black', font=('helvetica', 15, 'bold')) #
         labelAirpress.grid(row = 4, column = 3)
-
 
 
         forceH = tk.Button(self, text="Drag force",command=lambda: graph_window("SELECT time, dragforce FROM data WHERE time BETWEEN ? AND ?","Dragforce", "Newton"),height = 2 , width =15, bg='cyan', fg='black', font=('helvetica', 15, 'bold')) #
@@ -397,7 +395,7 @@ class PageTwo(tk.Frame):
         labelforceV.grid(row = 8, column = 3)
 
 
- ###################################  PAGE 3 Røykprobe  #####################################################
+ ##########  PAGE 3 Røykprobe  ##########
 
 class PageThree(tk.Frame):
 
@@ -436,7 +434,7 @@ class PageThree(tk.Frame):
 
 
 
-###################################  PAGE 4 Eksport  #####################################################
+##########  PAGE 4 Eksport  ##########
 
 class PageFour(tk.Frame):
 
@@ -483,6 +481,9 @@ class PageFour(tk.Frame):
         labelmen.grid(row = 1 , column = 2)
 
         def update_times_list():
+            """
+            Read database and list all times in the dropdown boxes
+            """
             c = controller.cursor
             c.execute('SELECT time FROM data')
             cblist = c.fetchall()
@@ -491,13 +492,16 @@ class PageFour(tk.Frame):
         update_times_list()
 
         def export_to_csv(startTime=None, endTime=None):
+            """
+            Write data between the selected times (inclusive) to a CSV-file
+            Files are placed in the public_html folder for the Apache web server
+            """
             if startTime is None or endTime is None:
                 startTime = cb.get()
                 endTime = cb2.get()
             if (startTime>=endTime):
                 tk.messagebox.showerror("Error", "Start time can not be less or equal to end time")
             else:
-                #export_file_path = filedialog.asksaveasfilename(defaultextension='.csv')
                 export_file_path = f"/var/www/idm.com/public_html/{endTime}.csv"
 
                 cursor = controller.cursor
