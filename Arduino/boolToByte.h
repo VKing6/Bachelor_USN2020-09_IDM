@@ -1,3 +1,7 @@
+// For Arduino
+// Convert booleans to a byte map
+// Author: Kristian Auestad
+//
 #ifndef _BOOLTOBYTE_H
 #define _BOOLTOBYTE_H
 

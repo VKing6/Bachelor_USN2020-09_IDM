@@ -1,3 +1,4 @@
+// Author: Joachim Haug
 #include <PID_v1.h> // PID library
 
 #define E 8 // Definerer kontrollsignal E til AC motordriver til port 8 på Arduino kortet

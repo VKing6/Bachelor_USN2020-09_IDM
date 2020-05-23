@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+#
+# Author: Kristian Auestad
+#
 import threading
 import datetime
 import sqlite3
