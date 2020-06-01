@@ -542,16 +542,21 @@ def Export_window(Sessoin_timer):
         Write data between the selected times (inclusive) to a CSV-file
         Files are placed in the public_html folder for the Apache web server
         """
-        labelmsg= tk.Label(root, text = " Exported selected", font=('helvetica', 20, 'bold'))
-        labelmsg.grid(row = 8, column = 1)
-        root.after(3000, labelmsg.destroy) 
+
         
         if startTime is None or endTime is None:
             startTime = cb.get()
             endTime = cb2.get()
         if (startTime>=endTime):
-            tk.messagebox.showerror("Error", "Start time can not be less or equal to end time")
+                        
+            labelmsg= tk.Label(root, text = " Start time can't be less than end time ", font=('helvetica', 20, 'bold'))
+            labelmsg.grid(row = 7, column = 1, columnspan = 2)
+            root.after(2000, labelmsg.destroy) 
+
         else:
+            labelmsg= tk.Label(root, text = " Exported selected", font=('helvetica', 20, 'bold'))
+            labelmsg.grid(row = 8, column = 1)
+            root.after(3000, labelmsg.destroy) 
             export_file_path = f"/var/www/idm.com/public_html/{endTime}.csv"
 
             cursor = app.cursor
@@ -567,7 +572,7 @@ def Export_window(Sessoin_timer):
         session_end_time = datetime.datetime.now().isoformat()[:19]
         export_to_csv(root.session_start_time, session_end_time)
         
-        labelmsg= tk.Label(root, text = "Session exported", font=('helvetica', 20, 'bold'))
+        labelmsg= tk.Label(root, text = "Session exported ", font=('helvetica', 20, 'bold'))
         labelmsg.grid(row = 8, column = 1)
         root.after(3000, labelmsg.destroy) 
         
