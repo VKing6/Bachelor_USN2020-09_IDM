@@ -111,10 +111,14 @@ class IDMGUI(tk.Tk):
         """
         Stop the IDM program and Shut down the IDM
         """
-        self.comm.close_serial()
-        self.after_cancel(self._afterjob)
-        os.system("sudo shutdown now")
-
+        MsgBox = tk.messagebox.askquestion ('Shutdown Application','Are you sure you want to shutdown the application',icon = 'warning')
+        if MsgBox == 'yes':
+            
+            self.comm.close_serial()
+            self.after_cancel(self._afterjob)
+            os.system("sudo shutdown now")
+        
+            
 
  ##########  Start page ##########
 
@@ -123,7 +127,7 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
 
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        SpeedAndPitch = tk.Button(self, text="Adjust speed \n Adjust pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         SpeedAndPitch.grid(row = 0 , column = 0)
 
         Measurments = tk.Button(self, text="Measurements",height = 3, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
@@ -132,8 +136,11 @@ class StartPage(tk.Frame):
         probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         probe.grid(row = 0, column = 2)
 
-        export = tk.Button(self, text="Export data",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        export = tk.Button(self, text="Export \n poweroff",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         export.grid(row = 0, column = 3)
+
+        labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
+        labelsp33.grid(row = 1 , column = 1)
 
         labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
         labelsp33.grid(row = 1 , column = 1)
@@ -226,7 +233,7 @@ class PageOne(tk.Frame):
 
 
 
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        SpeedAndPitch = tk.Button(self, text="Adjust speed \n Adjust pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         SpeedAndPitch.grid(row = 0 , column = 0)
 
         Measurments = tk.Button(self, text="Measurements",height = 3, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
@@ -235,8 +242,11 @@ class PageOne(tk.Frame):
         probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         probe.grid(row = 0, column = 2)
 
-        export = tk.Button(self, text="Export data",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        export = tk.Button(self, text="Export \n poweroff",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         export.grid(row = 0, column = 3)
+
+        labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
+        labelsp33.grid(row = 1 , column = 1)
 
 
         labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
@@ -329,17 +339,20 @@ class PageTwo(tk.Frame):
         self.after(0, update_display)
 
 
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
-        SpeedAndPitch.grid(row = 0, column = 0)
+        SpeedAndPitch = tk.Button(self, text="Adjust speed \n Adjust pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        SpeedAndPitch.grid(row = 0 , column = 0)
 
         Measurments = tk.Button(self, text="Measurements",height = 3, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
-        Measurments.grid(row = 0, column = 1)
+        Measurments.grid(row = 0 , column = 1)
 
-        probe = tk.Button(self, text="Adjust probe",height = 3, width = 13, command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         probe.grid(row = 0, column = 2)
 
-        export = tk.Button(self, text="Export data",height = 3, width = 11, command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        export = tk.Button(self, text="Export \n poweroff",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         export.grid(row = 0, column = 3)
+
+        labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
+        labelsp33.grid(row = 1 , column = 1)
 
 
         labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
@@ -401,8 +414,8 @@ class PageThree(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        
+        SpeedAndPitch = tk.Button(self, text="Adjust speed \n Adjust pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         SpeedAndPitch.grid(row = 0 , column = 0)
 
         Measurments = tk.Button(self, text="Measurements",height = 3, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
@@ -411,8 +424,11 @@ class PageThree(tk.Frame):
         probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         probe.grid(row = 0, column = 2)
 
-        export = tk.Button(self, text="Export data",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        export = tk.Button(self, text="Export \n poweroff",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         export.grid(row = 0, column = 3)
+
+        labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
+        labelsp33.grid(row = 1 , column = 1)
 
 
         labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
@@ -444,7 +460,7 @@ class PageFour(tk.Frame):
         self.session_start_time = datetime.datetime.now().isoformat()[:19]
 
 
-        SpeedAndPitch = tk.Button(self, text="Adjust speed/pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        SpeedAndPitch = tk.Button(self, text="Adjust speed \n Adjust pitch",height = 3, width = 18,command=lambda: controller.show_frame(PageOne), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         SpeedAndPitch.grid(row = 0 , column = 0)
 
         Measurments = tk.Button(self, text="Measurements",height = 3, width = 13, command=lambda: controller.show_frame(PageTwo), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
@@ -453,92 +469,162 @@ class PageFour(tk.Frame):
         probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         probe.grid(row = 0, column = 2)
 
-        export = tk.Button(self, text="Export data",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        export = tk.Button(self, text="Export \n poweroff",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         export.grid(row = 0, column = 3)
 
         labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
         labelsp33.grid(row = 1 , column = 1)
 
 
-        tkvar = tk.StringVar(self)
-        tkvar.set('Select start time')
 
-        tkvar2 = tk.StringVar(self)
-        tkvar2.set('Select ')
-
-        labelmen= tk.Label(self, text = "Select start time", font=('helvetica', 15, 'bold'))
-        labelmen.grid(row = 1 , column = 1)
-
-        cb = ttk.Combobox(self)
-        cb.set("Start time")
-        cb.grid(row = 2, column = 1)
-
-        cb2 = ttk.Combobox(self)
-        cb2.set("End time")
-        cb2.grid(row = 2, column = 2)
-
-        labelmen= tk.Label(self, text = "Select end time", font=('helvetica', 15, 'bold'))
-        labelmen.grid(row = 1 , column = 2)
-
-        def update_times_list():
-            """
-            Read database and list all times in the dropdown boxes
-            """
-            c = controller.cursor
-            c.execute('SELECT time FROM data')
-            cblist = c.fetchall()
-            cb['values'] = cblist
-            cb2['values'] = cblist
-        update_times_list()
-
-        def export_to_csv(startTime=None, endTime=None):
-            """
-            Write data between the selected times (inclusive) to a CSV-file
-            Files are placed in the public_html folder for the Apache web server
-            """
-            if startTime is None or endTime is None:
-                startTime = cb.get()
-                endTime = cb2.get()
-            if (startTime>=endTime):
-                tk.messagebox.showerror("Error", "Start time can not be less or equal to end time")
-            else:
-                export_file_path = f"/var/www/idm.com/public_html/{endTime}.csv"
-
-                cursor = controller.cursor
-                q = (startTime, endTime)
-                cursor.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q)
-
-                with open(export_file_path, "w") as csv_file:
-                    csv_writer = csv.writer(csv_file)
-                    csv_writer.writerow([i[0] for i in cursor.description])
-                    csv_writer.writerows(cursor.fetchall())
-
-        def export_session():
-            session_end_time = datetime.datetime.now().isoformat()[:19]
-            export_to_csv(self.session_start_time, session_end_time)
-            
-        def export_session_refresh():
-            self.session_start_time = datetime.datetime.now().isoformat()[:19]
-            
-        export_selected = tk.Button(self, text="Export\nselected",height = 2, width = 10,command=export_to_csv, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
-        export_selected.grid(row = 2, column = 0)
-
-        updateliste = tk.Button(self, text="Update list ",height = 2, width = 10,command=update_times_list, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
-        updateliste.grid(row = 3, column = 0)
+        Exportbtn = tk.Button(self, text="Export page ", height = 5, width = 15, command=lambda:Export_window(self.session_start_time), bg='green', fg='white', font=('helvetica', 20, 'bold')) #
+        Exportbtn.grid(row = 2, column = 1, columnspan=2)
+        
+        lablespacer= tk.Label(self, text = " ")
+        lablespacer.grid(row = 4, column = 1)
+        
+        poweroff = tk.Button(self, text="Power off ", height = 2, width = 7, command=controller.power_shutdown, bg='red', fg='white', font=('helvetica', 15, 'bold')) #
+        poweroff.grid(row = 8, column =3)
+        
+        
+        
 
 
-        labelspacer= tk.Label(self, text = "", font=('helvetica', 20, 'bold'))
-        labelspacer.grid(row = 43, column = 0)
 
-        export_session_button = tk.Button(self, text="Export\nsession", height = 2, width = 10,command=export_session, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
-        export_session_button.grid(row = 5, column = 0)
+def Export_window(Sessoin_timer):
+    
+    
+    root = tk.Tk()
+
+    tkvar = tk.StringVar(root)
+    tkvar.set('Select start time')
+
+    tkvar2 = tk.StringVar(root)
+    tkvar2.set('Select ')
+
+    labelmen= tk.Label(root, text = "Select start time", font=('helvetica', 15, 'bold'))
+    labelmen.grid(row = 1 , column = 1)
+    
+    root.session_start_time = Sessoin_timer
+
+    style = ttk.Style(root)
+    style.configure('TCombobox', arrowsize=100)
+    style.configure('Vertical.TScrollbar', arrowsize=100)
+
+    cb = ttk.Combobox(root)
+    cb.set("Start time")
+    cb.grid(row = 2, column = 1)
+
+    cb2 = ttk.Combobox(root)
+    cb2.set("End time")
+    cb2.grid(row = 2, column = 2)
+
+    labelmen= tk.Label(root, text = "Select end time", font=('helvetica', 15, 'bold'))
+    labelmen.grid(row = 1 , column = 2)
+
+    def update_times_list():
+        """
+        Read database and list all times in the dropdown boxes
+        """
+        
+        labelmsg= tk.Label(root, text = " List updated ", font=('helvetica', 20, 'bold'))
+        labelmsg.grid(row = 8, column = 1)
+        root.after(2000, labelmsg.destroy) 
+        c = app.cursor
+        c.execute('SELECT time FROM data')
+        cblist = c.fetchall()
+        cb['values'] = cblist
+        cb2['values'] = cblist
+    update_times_list()
+
+    def export_to_csv(startTime=None, endTime=None):
+        """
+        Write data between the selected times (inclusive) to a CSV-file
+        Files are placed in the public_html folder for the Apache web server
+        """
+        labelmsg= tk.Label(root, text = " Exported selected", font=('helvetica', 20, 'bold'))
+        labelmsg.grid(row = 8, column = 1)
+        root.after(3000, labelmsg.destroy) 
+        
+        if startTime is None or endTime is None:
+            startTime = cb.get()
+            endTime = cb2.get()
+        if (startTime>=endTime):
+            tk.messagebox.showerror("Error", "Start time can not be less or equal to end time")
+        else:
+            export_file_path = f"/var/www/idm.com/public_html/{endTime}.csv"
+
+            cursor = app.cursor
+            q = (startTime, endTime)
+            cursor.execute("SELECT * FROM data WHERE time BETWEEN ? AND ?", q)
+
+            with open(export_file_path, "w") as csv_file:
+                csv_writer = csv.writer(csv_file)
+                csv_writer.writerow([i[0] for i in cursor.description])
+                csv_writer.writerows(cursor.fetchall())
+
+    def export_session():
+        session_end_time = datetime.datetime.now().isoformat()[:19]
+        export_to_csv(root.session_start_time, session_end_time)
+        
+        labelmsg= tk.Label(root, text = "Session exported", font=('helvetica', 20, 'bold'))
+        labelmsg.grid(row = 8, column = 1)
+        root.after(3000, labelmsg.destroy) 
+        
+        
+    def export_session_refresh():
+        root.session_start_time = datetime.datetime.now().isoformat()[:19]
+        labelmsg= tk.Label(root, text = "Session cleard", font=('helvetica', 20, 'bold'))
+        labelmsg.grid(row = 8, column = 1)
+        root.after(3000, labelmsg.destroy) 
+        
+    export_selected = tk.Button(root, text="Export\nselected",height = 2, width = 10,command=export_to_csv, bg='green', fg='white', font=('helvetica', 20, 'bold')) #
+    export_selected.grid(row = 9, column = 0)
+
+    updateliste = tk.Button(root, text="Update list ",height = 2, width = 10,command=update_times_list, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
+    updateliste.grid(row = 10, column = 0)
 
 
-        Clear_session_button = tk.Button(self, text="Clear\nsession", height = 2, width = 10,command=export_session_refresh, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
-        Clear_session_button.grid(row = 5, column = 1)
 
-        poweroff = tk.Button(self, text="Power off ", height = 2, width = 10, command=controller.power_shutdown, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
-        poweroff.grid(row = 4, column = 3)
+
+    export_session_button = tk.Button(root, text="Export\nsession", height = 2, width = 10,command=export_session, bg='green', fg='white', font=('helvetica', 20, 'bold')) #
+    export_session_button.grid(row = 9, column = 2)
+
+
+    Clear_session_button = tk.Button(root, text="Clear\nsession", height = 2, width = 10,command=export_session_refresh, bg='red', fg='white', font=('helvetica', 20, 'bold')) #
+    Clear_session_button.grid(row = 10, column = 2)    
+    
+    
+    labelspacer= tk.Label(root, text = "", font=('helvetica', 20, 'bold'))
+    labelspacer.grid(row = 3, column = 1)
+    labelspacer2= tk.Label(root, text = "", font=('helvetica', 20, 'bold'))
+    labelspacer2.grid(row = 4, column = 1)
+    labelspacer3= tk.Label(root, text = "", font=('helvetica', 20, 'bold'))
+    labelspacer3.grid(row = 5, column = 1)
+    labelspacer4= tk.Label(root, text = "", font=('helvetica', 20, 'bold'))
+    labelspacer4.grid(row = 6, column = 1)
+    labelspacer5= tk.Label(root, text = "", font=('helvetica', 20, 'bold'))
+    labelspacer5.grid(row = 7, column = 1)
+    labelspacer6= tk.Label(root, text = "", font=('helvetica', 20, 'bold'))
+    labelspacer6.grid(row = 8, column = 1)
+    
+    def _quit():
+        root.quit()
+        root.destroy()
+
+
+    button = tk.Button(master=root, text="Back", command=_quit, bg='red', fg='white', font=('helvetica', 30, 'bold'))
+    button.grid(row = 10, column = 1)
+    
+    
+
+
+    root.geometry("800x480+0+0")
+    root.attributes("-fullscreen", True)
+    root.mainloop()
+
+
+
 
 
 def graph_window(database_val,label,yaxislab):
@@ -588,7 +674,7 @@ def graph_window(database_val,label,yaxislab):
         root.destroy()
 
 
-    button = tk.Button(master=root, text="Quit", command=_quit, bg='red', fg='white', font=('helvetica', 30, 'bold'))
+    button = tk.Button(master=root, text="Back", command=_quit, bg='red', fg='white', font=('helvetica', 30, 'bold'))
     button.pack(side=tk.BOTTOM)
 
     root.ani = animation.FuncAnimation(f,animate, interval=1000)
@@ -596,6 +682,8 @@ def graph_window(database_val,label,yaxislab):
     root.geometry("800x480+0+0")
     root.attributes("-fullscreen", True)
     root.mainloop()
+
+
 
 
 # Instantiate main GUI class
