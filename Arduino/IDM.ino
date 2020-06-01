@@ -1,5 +1,8 @@
 // #define DEBUG
-
+//
+// Author: Kristian Auestad & Steffen Barskrind
+//         + Joachim Haug
+//
 #include <ThreeWire.h>
 #include <RtcDS1302.h> // https://github.com/Makuna/Rtc
 #include <dht.h>       // https://github.com/adafruit/DHT-sensor-library
@@ -7,8 +10,8 @@
 
 #include "boolToByte.h"
 
-// Data structs
-struct SensorData {
+    // Data structs
+    struct SensorData {
     int windSpeed;
     int temperature;
     int humidity;

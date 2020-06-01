@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# Author: Kristian Auestad & Steffen Barskrind
+#
+
 import matplotlib
 matplotlib.use('Agg')
 import tkinter as tk
@@ -20,11 +24,6 @@ sys.path.append("/home/pi/Projects/IDM/GUI/")
 import dataobject
 import idmserial
 from PIL import Image,ImageTk
-
-
-
-########## initialization  ##########
-
 
 
 ########## PAGE FUNCTION ##########
