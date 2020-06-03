@@ -135,7 +135,7 @@ class StartPage(tk.Frame):
         probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         probe.grid(row = 0, column = 2)
 
-        export = tk.Button(self, text="Export \n poweroff",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        export = tk.Button(self, text="Export/ \n Power off",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         export.grid(row = 0, column = 3)
 
         labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
@@ -241,7 +241,7 @@ class PageOne(tk.Frame):
         probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         probe.grid(row = 0, column = 2)
 
-        export = tk.Button(self, text="Export \n poweroff",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        export = tk.Button(self, text="Export/ \n Power off",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         export.grid(row = 0, column = 3)
 
         labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
@@ -347,7 +347,7 @@ class PageTwo(tk.Frame):
         probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         probe.grid(row = 0, column = 2)
 
-        export = tk.Button(self, text="Export \n poweroff",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        export = tk.Button(self, text="Export/ \n Power off",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         export.grid(row = 0, column = 3)
 
         labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
@@ -423,7 +423,7 @@ class PageThree(tk.Frame):
         probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         probe.grid(row = 0, column = 2)
 
-        export = tk.Button(self, text="Export \n poweroff",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        export = tk.Button(self, text="Export/ \n Power off",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         export.grid(row = 0, column = 3)
 
         labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
@@ -468,7 +468,7 @@ class PageFour(tk.Frame):
         probe = tk.Button(self, text="Adjust probe",height = 3, width = 13,command=lambda: controller.show_frame(PageThree), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         probe.grid(row = 0, column = 2)
 
-        export = tk.Button(self, text="Export \n poweroff",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
+        export = tk.Button(self, text="Export/ \n Power off",height = 3, width = 11,command=lambda: controller.show_frame(PageFour), bg='green', fg='white', font=('helvetica', 18, 'bold')) #
         export.grid(row = 0, column = 3)
 
         labelsp33 = tk.Label(self, text="",  font=('helvetica', 30, 'bold'))
@@ -476,7 +476,7 @@ class PageFour(tk.Frame):
 
 
 
-        Exportbtn = tk.Button(self, text="Export page ", height = 5, width = 15, command=lambda:Export_window(self.session_start_time), bg='green', fg='white', font=('helvetica', 20, 'bold')) #
+        Exportbtn = tk.Button(self, text="Export data ", height = 5, width = 15, command=lambda:Export_window(self.session_start_time), bg='green', fg='white', font=('helvetica', 20, 'bold')) #
         Exportbtn.grid(row = 2, column = 1, columnspan=2)
         
         lablespacer= tk.Label(self, text = " ")
